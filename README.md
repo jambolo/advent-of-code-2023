@@ -52,7 +52,15 @@ Easy again. I wish Rust weren't so picky about integer types. I'm using `as` eve
 
 ### Day 12
 
-Permutations ... It could get ugly, but otherwise it is fairly straightforward.
+Picking up AOC 2023 again after putting it aside for a year. I wish I could remember how I did the rust compile-debug process in VS Code.
+
+Permutations ... It could get ugly, but otherwise it is fairly straightforward with a brute force approach.
+
+#### Part 1
+Converted text to binary to hopefully boost performance. Basically, the brute force approach works ok.
+
+#### Part 2
+I had to move to 128-bit itegers, but as I expected, the brute force approach doesn't scale sufficiently. I'm going to have to do something different.
 
 ### Day 13
 
