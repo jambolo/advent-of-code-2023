@@ -65,6 +65,7 @@ Easy again, though I think I could have improved performance so part 2 wouldn't 
 Oddly, I added code to check for stability and it did not detect any. However, I let it run for only 1000000 cycles and coincidentally the result was the correct answer. I may have gotten close enough to stability to get lucky and get the correct result without actually reaching stability.
 
 ### Day 15
+
 I don't know. These challenges have been very straightforward thus far (except for day 12 and day 14). They seem simpler than previous years. However, I am only halfway through...
 
 I spent a lot of time unsuccessfully trying to figure out how to get a working and concise equivalent of this: `let boxes: Vec<Vec<Lens>> = vec![Vec:new(); 256];`. I imagine someone that knows Rust well would say, "Oh, yeah. You can't".
@@ -79,14 +80,13 @@ Trivial. Took the chance to organize, refactor and clean up some code. I decided
 
 Ok, A* in Rust. Let's see how difficult it is to do.
 
-#### Part 1
 Implementing a simple A* turned out to be a challenge because in a typical implmentation, the nodes are static and contain the f and g values and the priority queue entries maintain links to their associated nodes. That causes issues with mutability and lifetimes, the two things that Rust is extremely picky about. In the end, I stored all state about the nodes in the priority queue elements. That was neccessary anyway because the pathfinding for the problem is convoluted. Also, the information I can get from static storage is not necessary for solving this problem.
 
 In general, while A* is the optimal general pathfinding solution, it has implementation issues.
 
-1. Elements in the priority queue must be removed, replaced or changed. That operation is generally not supported by priority queues, which generally assume that entries are immutable and inaccessible until they reach the front of the queue.
+It turns out that there is a way to avoid manipulating the contents of the priority queue. So, not a problem.
 
-2. Node states are updated, making optimizations such as caching and parallelization perilous. This is where an implementation in Rust encounters difficulties.
+Results: Part 1: 847, Part 2: 997
 
 ### Day 18
 
