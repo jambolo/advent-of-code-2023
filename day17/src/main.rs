@@ -8,30 +8,40 @@ const MIN_RUN: usize = if cfg!(feature="part2") { 4 } else { 1 };
 const MAX_RUN: usize = if cfg!(feature="part2") { 10 } else { 3 };
 
 #[derive(Debug, Clone, Copy)]
+enum Direction {
+    Right, Up, Left, Down
+}
+
+impl Direction {
+    fn opposite(&self) -> Direction {
+        match self {
+            Right => Left,
+            Up => Down,
+            Left => Right,
+            Down => Up,
+        }
+    }
+}
+#[derive(Debug, Clone, Copy)]
 struct Node {
     position: (usize, usize),
     f: i32,     // f = g + h
     g: i32,     // cost from start
-    dir: Option<(i32, i32)>,
+    dir: Option<Direction>,
 }
 
-impl Eq for Node {}
+impl Eq for Node {
 
-impl PartialEq for Node {
-    fn eq(&self, other: &Self) -> bool {
-        self.f == other.f
-    }
 }
-
 impl Ord for Node {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.f.partial_cmp(&other.f).unwrap_or(Ordering::Equal)
+        other.f.cmp(&self.f)
     }
 }
 
 impl PartialOrd for Node {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
+        Some(other.cmp(self))
     }
 }
 
@@ -50,18 +60,18 @@ fn main() {
     let start: (usize, usize) = (0, 0);
     let goal: (usize, usize) = (map[0].len() - 1, map.len() - 1);
 
-    let shortest_unrestricted_distance_map = build_shortest_unrestricted_distance_map(goal, &map);
-//    print_map(&shortest_unrestricted_distance_map);
-
-    let h = |start: (usize, usize), _: (usize, usize)| {
-        shortest_unrestricted_distance_map[start.1][start.0]
-    };
-
-//    let h = |start: (usize, usize), goal: (usize, usize) | -> i32 {
-//        manhattan_distance(start, goal)
+//    let shortest_unrestricted_distance_map = build_shortest_unrestricted_distance_map(start, goal, &map);
+////    print_map(&shortest_unrestricted_distance_map);
+//
+//    let h = |start: (usize, usize), _: (usize, usize)| {
+//        shortest_unrestricted_distance_map[start.1][start.0]
 //    };
 
-    let d = shortest(start, goal, h, &map);
+    let h = |start: (usize, usize), goal: (usize, usize) | -> i32 {
+        manhattan_distance(start, goal)
+    };
+
+    let d = shortest_path(start, goal, h, &map);
     let elapsed = timer.elapsed();
     println!("Elapsed: {:.2?}", elapsed);
     println!("Shortest path: {}", d);
@@ -81,15 +91,20 @@ fn print_map(map: &Vec<Vec<i32>>) {
     }
 }
 fn build_shortest_unrestricted_distance_map(
+    start: (usize, usize),
     goal: (usize, usize),
     map: &Vec<Vec<i32>>
 ) -> Vec<Vec<i32>> {
-    let mut shortest_unrestricted_distance_map = vec![vec![std::i32::MAX; map[0].len()]; map.len()];
-    shortest_unrestricted_distance_map[goal.1][goal.0] = map[goal.1][goal.0];
-
-    let mut open: BinaryHeap<Reverse<(usize, usize)>> = BinaryHeap::new();
-    open.push(Reverse((goal.0, goal.1)));
-
+    struct Node {
+        position: (usize, usize),
+        cost: i32,
+    }
+    impl PartialOrd for Node {
+        fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+            Some(other.cost.cmp(some.cost))
+        }
+    }
+    
     fn get_neighbors(current: &(usize, usize), map: &Vec<Vec<i32>>) -> Vec<(usize, usize)> {
         let mut neighbors: Vec<(usize, usize)> = Vec::new();
         if current.0 > 0 {
@@ -106,7 +121,15 @@ fn build_shortest_unrestricted_distance_map(
         }
         neighbors
     }
-    while let Some(Reverse(current)) = open.pop() {
+
+    let mut shortest_unrestricted_distance_map = vec![vec![std::i32::MAX; map[0].len()]; map.len()];
+    shortest_unrestricted_distance_map[goal.1][goal.0] = map[goal.1][goal.0];
+
+//    let mut open: BinaryHeap<Node> = BinaryHeap::new();
+//    open.push(Node { (goal.0, goal.1), map[goal.1][goal.0] });
+    let open = Vec::new();
+    open.push(goal);
+    while let Some(current) = open.pop() {
         let current_cost = shortest_unrestricted_distance_map[current.1][current.0];
         let neighbors: Vec<(usize, usize)> = get_neighbors(&current, &map);
         for n in &neighbors {
@@ -117,19 +140,20 @@ fn build_shortest_unrestricted_distance_map(
             }
         }
     }
+    shortest_unrestricted_distance_map[start.0][start.1] -= map[start.1][start.0];
     shortest_unrestricted_distance_map
 }
 
-fn shortest(
+fn shortest_path(
     start: (usize, usize),
                          goal: (usize, usize),
     h: impl Fn((usize, usize), (usize, usize)) -> i32,
     map: &Vec<Vec<i32>>) -> i32
 {
-    let mut open: BinaryHeap<Reverse<Node>> = BinaryHeap::new();
+    let mut open: BinaryHeap<Node> = BinaryHeap::new();
     
     // Push the start node to the open set
-    open.push(Reverse(Node { position: start, f: 0 + h(start, goal), g: 0, dir: None }));
+    open.push(Node { position: start, f: 0 + h(start, goal), g: 0, dir: None });
 
     let mut lowest_h = std::i32::MAX;
     while let Some(Reverse(current)) = open.pop() {
@@ -145,12 +169,10 @@ fn shortest(
         for mut n in neighbors {
             n.f = n.g + h(n.position, goal);
             // If the neighbor is already in the open set, but its new g value is lower, then we replace the existing node 
-            if let Some(existing) = find_node(&open, n.position) {
+            if let Some(existing) = find_node(&open, n.position, n.dir) {
                 if n.g < existing.g {
                     open.retain(|&Reverse(c)|
-                        c.position != n.position ||
-                        c.dir.unwrap().0 != n.dir.unwrap().0 ||
-                        c.dir.unwrap().1 != n.dir.unwrap().1
+                        c.position != n.position || ((c.dir.unwrap().0 == 0) != (n.dir.unwrap().0 == 0))
                     );
                     open.push(Reverse(n));
                 }
@@ -163,10 +185,10 @@ fn shortest(
     std::i32::MAX
 }
 
-fn find_node(open: &BinaryHeap<Reverse<Node>>, position: (usize, usize)) -> Option<Node> {
+fn find_node(open: &BinaryHeap<Reverse<Node>>, position: (usize, usize), dir:Option<(i32, i32)>) -> Option<Node> {
     open
         .iter()
-        .find(|&&Reverse(node)| node.position == position)
+        .find(|&&Reverse(node)| node.position == position && ((node.dir.unwrap().0 == 0) == (dir.unwrap().0 == 0)))
         .map(|&Reverse(node)| node)
 }
 
