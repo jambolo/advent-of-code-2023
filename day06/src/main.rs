@@ -2,7 +2,7 @@ use common::load;
 
 fn main() {
     println!("Day 6, part {}", if cfg!(feature="part2") { "2" } else { "1" });
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
 
     let times = parse_line(&lines[0]);
     let distances = parse_line(&lines[1]);

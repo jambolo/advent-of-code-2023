@@ -4,7 +4,7 @@ const EXPANSION: i64 = 1000000 - 1;
 
 fn main() {
     println!("Day 11, part {}", if cfg!(feature="part2") { "2" } else { "1" });
-    let galaxy = load::lines();
+    let galaxy = load::lines().unwrap();
 
     let (xr, xc) = expand(&galaxy);
     let stars = find_stars(&galaxy);

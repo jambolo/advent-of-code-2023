@@ -13,7 +13,7 @@ fn main() {
     // Color is ignored
     let steps_re = Regex::new(r"^([UDLR])\s+(\d+)\s+\(#[0-9a-fA-F]+\)$").unwrap();
 
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
     let mut steps:Vec<Step> = Vec::new();
     for line in lines {
         if let Some(captures) = steps_re.captures(line.as_str()) {

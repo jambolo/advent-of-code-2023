@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 fn main() {
     println!("Day 8, part {}", if cfg!(feature="part2") { "2" } else { "1" });
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
 
     // Load the path
     let path: Vec<char> = lines[0].chars().collect();

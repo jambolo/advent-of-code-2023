@@ -30,7 +30,7 @@ fn main() {
     println!("Day 23, part {}", if cfg!(feature="part2") { "2" } else { "1" });
 
     // Load the map
-    let map = load::map();
+    let map = load::map().unwrap();
 
     let start = (1, 0);
     let goal = (map.len() - 2, map[0].len() - 1);

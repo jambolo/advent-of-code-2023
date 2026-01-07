@@ -5,7 +5,7 @@ fn main() {
     println!("Day 25, part {}", if cfg!(feature="part2") { "2" } else { "1" });
 
     // Load the data
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
     let mut graph = parse_graph(&lines);
     println!("Graph: {:?} entries", graph.len());
 

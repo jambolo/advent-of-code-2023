@@ -22,7 +22,7 @@ struct Part {
 fn main() {
     println!("Day 19, part {}", if cfg!(feature="part2") { "2" } else { "1" });
 
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
 
     // Parse each line as a workflow until an empty line is found.
     let mut workflows = HashMap::new();

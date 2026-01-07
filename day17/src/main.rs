@@ -36,7 +36,7 @@ impl PartialOrd for Node {
 fn main() {
     println!("Day 17, part {}", if cfg!(feature="part2") { "2" } else { "1" });
 
-    let map: Vec<Vec<u32>> = load::numbers_map();
+    let map = load::numbers_map().unwrap();
     let start: (usize, usize) = (0, 0);
     let goal: (usize, usize) = (map[0].len() - 1, map.len() - 1);
 
@@ -51,7 +51,7 @@ fn main() {
 fn shortest(start: (usize, usize),
                          goal: (usize, usize),
                          h: fn(from: (usize, usize), to: (usize, usize)) -> f32,
-                         map: &Vec<Vec<u32>>) -> f32
+                         map: &Vec<Vec<i32>>) -> f32
 {
     let mut open: BinaryHeap<Reverse<Node>> = BinaryHeap::new();
     
@@ -94,7 +94,7 @@ fn find_node(open: &BinaryHeap<Reverse<Node>>, position: (usize, usize), from: O
         .map(|&Reverse(node)| node)
 }
 
-fn get_neighbors(current: &Node, map: &Vec<Vec<u32>>) -> Vec<Node> {
+fn get_neighbors(current: &Node, map: &Vec<Vec<i32>>) -> Vec<Node> {
     let mut neighbors = Vec::new();
     let x = current.position.0;
     let y = current.position.1;

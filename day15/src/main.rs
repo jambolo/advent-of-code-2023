@@ -6,14 +6,14 @@ fn main() {
     println!("Day 15, part {}", if cfg!(feature="part2") { "2" } else { "1" });
     #[cfg(not(feature = "part2"))]
     {
-        let steps = load::comma_separated_values();
+        let steps = load::comma_separated_values().unwrap();
         let sum: u64 = steps.iter().map(|s| hash(s)).sum();
         println!("Sum: {}", sum);
     }
 
     #[cfg(feature = "part2")]
     {
-        let steps = load::comma_separated_values();
+        let steps = load::comma_separated_values().unwrap();
 
         let re_assign = Regex::new(r"^([a-z]+)=(\d+)$").unwrap();
         let re_remove = Regex::new(r"^([a-z]+)-$").unwrap();

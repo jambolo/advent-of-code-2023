@@ -3,20 +3,20 @@ use common::load;
 const DIGIT_NAMES: [&str; 10] = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
 
 // Returns the first digit in a string
-fn first_number_in(s: &String) -> Option<(usize, u32)> {
+fn first_number_in(s: &str) -> Option<(usize, u32)> {
     s.char_indices()
         .find_map(|(i, c)| if c.is_ascii_digit() { Some((i, c.to_digit(10)?)) } else { None })
 }
 
 // Returns the last digit in a string
-fn last_number_in(s: &String) -> Option<(usize, u32)> {
+fn last_number_in(s: &str) -> Option<(usize, u32)> {
     s.char_indices()
         .rev()
         .find_map(|(i, c)| if c.is_ascii_digit() { Some((i, c.to_digit(10)?)) } else { None })
 }
 
 // Returns the first digit by name in a string
-fn first_name_in(s: &String) -> Option<(usize, usize)> {
+fn first_name_in(s: &str) -> Option<(usize, usize)> {
     let mut first_value: Option<usize> = None;
     let mut first_pos: Option<usize> = None;
     for (value, &digit_name) in DIGIT_NAMES.iter().enumerate() {
@@ -34,7 +34,7 @@ fn first_name_in(s: &String) -> Option<(usize, usize)> {
 }
 
 // Returns the last digit by name in a string
-fn last_name_in(s: &String) -> Option<(usize, usize)> {
+fn last_name_in(s: &str) -> Option<(usize, usize)> {
     let mut last_value: Option<usize> = None;
     let mut last_pos: Option<usize> = None;
     for (value, &digit_name) in DIGIT_NAMES.iter().enumerate().rev() {
@@ -69,7 +69,7 @@ fn last_value((a1, a2): (usize, u32), (b1, b2): (usize, usize)) -> u32 {
 }
 fn main() {
     println!("Day 1, part {}", if cfg!(feature="part2") { "2" } else { "1" });
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
 
     let mut sum = 0;
     for line in lines {

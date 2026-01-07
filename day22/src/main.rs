@@ -4,7 +4,7 @@ fn main() {
     println!("Day 22, part {}", if cfg!(feature="part2") { "2" } else { "1" });
 
     // Load the map
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
     let mut bricks = parse_bricks(&lines);
     //println!("{} Bricks: {:?}", bricks.len(), bricks);
     //check_bricks_sanity(&bricks);

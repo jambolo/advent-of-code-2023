@@ -2,7 +2,7 @@ use common::load;
 
 fn main() {
     println!("Day 10, part {}", if cfg!(feature="part2") { "2" } else { "1" });
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
 
     let mut grid: Vec<Vec<char>> = Vec::new();
     for line in lines {

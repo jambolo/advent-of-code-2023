@@ -7,7 +7,7 @@ fn main() {
     println!("Day 21, part {}", if cfg!(feature="part2") { "2" } else { "1" });
 
     // Load the map
-    let map = load::map();
+    let map = load::map().unwrap();
 //    print_map(&map);
     let width = map[0].len();
     let height = map.len();

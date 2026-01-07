@@ -4,7 +4,7 @@ use std::collections::BTreeSet;
 
 fn main() {
     println!("Day 3, part {}", if cfg!(feature="part2") { "2" } else { "1" });
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
 
     // Create a 2D array of characters
     let mut grid: Vec<Vec<char>> = Vec::new();

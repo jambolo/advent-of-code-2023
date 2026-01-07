@@ -17,7 +17,7 @@ struct Branch {
 fn main() {
     println!("Day 16, part {}", if cfg!(feature="part2") { "2" } else { "1" });
 
-    let map = load::map();
+    let map = load::map().unwrap();
 
     #[cfg(not(feature = "part2"))]
     {

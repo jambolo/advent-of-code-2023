@@ -16,7 +16,7 @@ fn main() {
     println!("Day 24, part {}", if cfg!(feature="part2") { "2" } else { "1" });
 
     // Load the data
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
     let stones = parse_stones(&lines);
 //    println!("Stones: {:?}", stones);
 

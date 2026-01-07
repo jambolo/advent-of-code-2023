@@ -2,7 +2,7 @@ use common::load;
 
 fn main() {
     println!("Day 12, part {}", if cfg!(feature="part2") { "2" } else { "1" });
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
 
     let mut sum: i64 = 0;
     for line in lines {

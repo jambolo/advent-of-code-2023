@@ -2,7 +2,7 @@ use common::load;
 
 fn main() {
     println!("Day 4, part {}", if cfg!(feature="part2") { "2" } else { "1" });
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
 
     // Parse the cards
     let mut cards: Vec<(i32, Vec<i32>, Vec<i32>)> = Vec::new();

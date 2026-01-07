@@ -8,7 +8,7 @@ fn main() {
     println!("Day 2, part {}", if cfg!(feature="part2") { "2" } else { "1" });
     println!("Bag max is {} red, {} green, {} blue", MAX.0, MAX.1, MAX.2);
 
-    let games = load::lines();
+    let games = load::lines().unwrap();
 
     let mut id_sum = 0;
     let mut sum_of_powers = 0;

@@ -4,7 +4,7 @@ const SORT_ORDER: [char; 13] = ['A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4'
 
 fn main() {
     println!("Day 7, part {}", if cfg!(feature="part2") { "2" } else { "1" });
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
 
     let mut game: Vec<(Vec<char>, i64)> = Vec::new();
     for line in lines {

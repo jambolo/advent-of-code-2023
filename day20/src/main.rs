@@ -26,7 +26,7 @@ impl<'a> Module<'a> {
 fn main() {
     println!("Day 20, part {}", if cfg!(feature="part2") { "2" } else { "1" });
 
-    let lines = load::lines();
+    let lines = load::lines().unwrap();
     let mut modules = load_modules(&lines);
 
 //    println!("Modules: {:?}", modules);
