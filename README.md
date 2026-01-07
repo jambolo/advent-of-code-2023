@@ -146,7 +146,9 @@ Results: Part 1: 389114
 
 It seemed fairly straightforward, but Rust's strict mutability and reference lifetime rules made it difficult. I get that Rust forces you to consider potential aliasing and reference problems in order to allow the compiler to make ideal optimization decisions, but for something quick and dirty, I don't mind the compiler assuming worst case.
 
-Results: Part 1: 839775244
+I removed all the references to eliminate the lifetime headaches. They weren't necessary anyway. I refactored te code to make it a lot cleaner just for fun.
+
+Results: Part 1: 839775244, Part 2: 207787533680413
 
 ## Day 21
 
