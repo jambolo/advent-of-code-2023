@@ -1,7 +1,7 @@
 use common::load;
 
 fn main() {
-    println!("Day 10, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 10, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     let mut grid: Vec<Vec<char>> = Vec::new();
@@ -20,8 +20,8 @@ fn main() {
     // Follow the path until the start is reached again, marking each point as occupied
     occupied[starting_point.1][starting_point.0] = true;
     let mut p = points[0].clone();
-    while p.0.0 != starting_point.0 || p.0.1 != starting_point.1 {
-        occupied[p.0.1][p.0.0] = true;
+    while p.0 .0 != starting_point.0 || p.0 .1 != starting_point.1 {
+        occupied[p.0 .1][p.0 .0] = true;
         p = next_point(p, &grid);
     }
 
@@ -94,7 +94,7 @@ fn count_crossings(x0: usize, y0: usize, grid: &Vec<Vec<char>>) -> i32 {
 }
 
 fn next_point(p: ((usize, usize), (isize, isize)), grid: &Vec<Vec<char>>) -> ((usize, usize), (isize, isize)) {
-    let d = direction(p.1, grid[p.0.1][p.0.0]);
+    let d = direction(p.1, grid[p.0 .1][p.0 .0]);
     let n = advance(p.0, d);
     (n, d)
 }
@@ -137,20 +137,56 @@ fn find_exits(point: (usize, usize), grid: &Vec<Vec<char>>) -> Vec<((usize, usiz
 }
 
 fn advance(p: (usize, usize), d: (isize, isize)) -> (usize, usize) {
-    let n:(usize, usize) = ((p.0 as isize + d.0) as usize, (p.1 as isize + d.1) as usize);
+    let n: (usize, usize) = ((p.0 as isize + d.0) as usize, (p.1 as isize + d.1) as usize);
     n
 }
 
 // Returns the direction specified by the character.
 fn direction(d: (isize, isize), c: char) -> (isize, isize) {
     match c {
-        '-' => if d.0 == 1 { (1, 0) } else { (-1, 0) },
-        '|' => if d.1 == 1 { (0, 1) } else { (0, -1) },
-        'F' => if d.1 == -1 { (1, 0) } else { (0, 1) },
-        '7' => if d.0 == 1 { (0, 1) } else { (-1, 0) },
-        'J' => if d.0 == 1 { (0, -1) } else { (-1, 0) },
-        'L' => if d.1 == 1 { (1, 0) } else { (0, -1) },
-        _ => (0, 0)
+        '-' => {
+            if d.0 == 1 {
+                (1, 0)
+            } else {
+                (-1, 0)
+            }
+        }
+        '|' => {
+            if d.1 == 1 {
+                (0, 1)
+            } else {
+                (0, -1)
+            }
+        }
+        'F' => {
+            if d.1 == -1 {
+                (1, 0)
+            } else {
+                (0, 1)
+            }
+        }
+        '7' => {
+            if d.0 == 1 {
+                (0, 1)
+            } else {
+                (-1, 0)
+            }
+        }
+        'J' => {
+            if d.0 == 1 {
+                (0, -1)
+            } else {
+                (-1, 0)
+            }
+        }
+        'L' => {
+            if d.1 == 1 {
+                (1, 0)
+            } else {
+                (0, -1)
+            }
+        }
+        _ => (0, 0),
     }
 }
 

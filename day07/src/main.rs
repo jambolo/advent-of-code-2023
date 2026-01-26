@@ -3,7 +3,7 @@ use common::load;
 const SORT_ORDER: [char; 13] = ['A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J'];
 
 fn main() {
-    println!("Day 7, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 7, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     let mut game: Vec<(Vec<char>, i64)> = Vec::new();
@@ -12,7 +12,7 @@ fn main() {
         game.push(play);
     }
 
-    game.sort_unstable_by(|a, b| {hand_sorter(&a.0, &b.0)});
+    game.sort_unstable_by(|a, b| hand_sorter(&a.0, &b.0));
 
     let mut sum: i64 = 0;
     for i in 0..game.len() {
@@ -57,24 +57,20 @@ fn parse_line(line: &String) -> (Vec<char>, i64) {
 // Returns the type of hand
 fn classify(hand: &Vec<char>) -> i64 {
     let mut sorted = hand.clone();
-    sorted.sort_unstable_by(|a, b| { card_sorter(a, b) });
+    sorted.sort_unstable_by(|a, b| card_sorter(a, b));
 
     if is_five_of_a_kind(&sorted) {
         return 0;
     }
     if is_four_of_a_kind(&sorted) {
         return 1;
-    }
-    else if is_full_house(&sorted) {
+    } else if is_full_house(&sorted) {
         return 2;
-    }
-    else if is_three_of_a_kind(&sorted) {
+    } else if is_three_of_a_kind(&sorted) {
         return 3;
-    }
-    else if is_two_pair(&sorted) {
+    } else if is_two_pair(&sorted) {
         return 4;
-    }
-    else if is_pair(&sorted) {
+    } else if is_pair(&sorted) {
         return 5;
     }
 
@@ -100,11 +96,9 @@ fn is_four_of_a_kind(hand: &Vec<char>) -> bool {
     for card in hand {
         if *card == last {
             count += 1;
-        }
-        else if *card == 'J' {
+        } else if *card == 'J' {
             continue;
-        }
-        else {
+        } else {
             count = 1;
         }
         last = *card;
@@ -124,22 +118,17 @@ fn is_full_house(hand: &Vec<char>) -> bool {
     for card in hand {
         if *card == last1 {
             count1 += 1;
-        }
-        else if *card == last2 {
+        } else if *card == last2 {
             count2 += 1;
-        }
-        else if count1 == 0 {
+        } else if count1 == 0 {
             count1 = 1;
             last1 = *card;
-        }
-        else if count2 == 0 {
+        } else if count2 == 0 {
             count2 = 1;
             last2 = *card;
-        }
-        else if *card == 'J' {
+        } else if *card == 'J' {
             continue;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -154,11 +143,9 @@ fn is_three_of_a_kind(hand: &Vec<char>) -> bool {
     for card in hand {
         if *card == last {
             count += 1;
-        }
-        else if *card == 'J' {
+        } else if *card == 'J' {
             continue;
-        }
-        else {
+        } else {
             count = 1;
         }
         last = *card;
@@ -180,29 +167,22 @@ fn is_two_pair(hand: &Vec<char>) -> bool {
     for card in hand {
         if *card == last1 {
             count1 += 1;
-        }
-        else if *card == last2 {
+        } else if *card == last2 {
             count2 += 1;
-        }
-        else if *card == last3 {
+        } else if *card == last3 {
             count3 += 1;
-        }
-        else if count1 == 0 {
+        } else if count1 == 0 {
             count1 = 1;
             last1 = *card;
-        }
-        else if count2 == 0 {
+        } else if count2 == 0 {
             count2 = 1;
             last2 = *card;
-        }
-        else if count3 == 0 {
+        } else if count3 == 0 {
             count3 = 1;
             last3 = *card;
-        }
-        else if *card == 'J' {
+        } else if *card == 'J' {
             continue;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -217,11 +197,9 @@ fn is_pair(hand: &Vec<char>) -> bool {
     for card in hand {
         if *card == last {
             count += 1;
-        }
-        else if *card == 'J' {
+        } else if *card == 'J' {
             continue;
-        }
-        else {
+        } else {
             count = 1;
         }
         last = *card;

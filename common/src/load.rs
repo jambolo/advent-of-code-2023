@@ -1,9 +1,4 @@
-use std::{
-    env,
-    fs::read_to_string,
-    io,
-    path::Path,
-};
+use std::{env, fs::read_to_string, io, path::Path};
 
 /// Loads lines of data from the file specified in the command into a vector of strings
 pub fn lines() -> Result<Vec<String>, String> {
@@ -50,19 +45,13 @@ pub fn numbers_map() -> Result<Vec<Vec<i32>>, String> {
 /// Reads an entire file into a 2D array of numbers
 fn read_numbers_map(filename: impl AsRef<Path>) -> io::Result<Vec<Vec<i32>>> {
     let input = read_to_string(filename)?;
-    Ok(input.lines()
-        .map(|line| line
-            .chars()
-            .filter_map(|c| c.to_digit(10).map(|d| d as i32))
-            .collect()
-        )
-        .collect()
-    )
+    Ok(input
+        .lines()
+        .map(|line| line.chars().filter_map(|c| c.to_digit(10).map(|d| d as i32)).collect())
+        .collect())
 }
 
 fn get_path() -> Result<String, String> {
     let args: Vec<String> = env::args().collect();
-    args.get(1)
-        .cloned()
-        .ok_or_else(|| "Missing input file argument".to_string())
+    args.get(1).cloned().ok_or_else(|| "Missing input file argument".to_string())
 }

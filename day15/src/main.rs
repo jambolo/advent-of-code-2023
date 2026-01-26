@@ -3,7 +3,7 @@ use common::load;
 use regex::Regex;
 
 fn main() {
-    println!("Day 15, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 15, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     #[cfg(not(feature = "part2"))]
     {
         let steps = load::comma_separated_values().unwrap();
@@ -42,7 +42,10 @@ fn main() {
                     }
                 }
                 if !found {
-                    boxes[i].push(Lens { symbol: symbol.to_string(), f });
+                    boxes[i].push(Lens {
+                        symbol: symbol.to_string(),
+                        f,
+                    });
                 }
             } else if let Some(captured) = re_remove.captures(&s) {
                 let symbol = captured.get(1).unwrap().as_str();
@@ -54,9 +57,10 @@ fn main() {
         }
         // Sum the focusing power of lenses in boxes that are not empty
         let sum: i64 = boxes.iter().enumerate().fold(0, |a0, (b, lenses)| {
-            a0 + lenses.iter().enumerate().fold(0, |a1, (i, lens)| {
-                a1 + focusing_power(b, i, lens.f)
-            })
+            a0 + lenses
+                .iter()
+                .enumerate()
+                .fold(0, |a1, (i, lens)| a1 + focusing_power(b, i, lens.f))
         });
         println!("Sum: {}", sum);
     }

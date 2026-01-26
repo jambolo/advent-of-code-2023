@@ -1,7 +1,7 @@
 use common::load;
 
 fn main() {
-    println!("Day 5, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 5, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
     let mut iter = lines.iter();
 
@@ -29,12 +29,8 @@ where
 {
     let input = iter.next().unwrap();
     let parts: Vec<&str> = input.split(":").collect();
-    let numbers: Vec<i64> = parts[1]
-        .trim()
-        .split_whitespace()
-        .map(|s| s.parse().unwrap())
-        .collect();
-    let seeds= numbers.chunks(2).map(|c| (c[0], c[1])).collect();
+    let numbers: Vec<i64> = parts[1].trim().split_whitespace().map(|s| s.parse().unwrap()).collect();
+    let seeds = numbers.chunks(2).map(|c| (c[0], c[1])).collect();
 
     iter.next(); // Skip blank line
 
@@ -52,10 +48,7 @@ where
             break;
         }
 
-        let parts: Vec<i64> = line
-            .split_whitespace()
-            .map(|s| s.parse().unwrap())
-            .collect();
+        let parts: Vec<i64> = line.split_whitespace().map(|s| s.parse().unwrap()).collect();
 
         map.push((parts[0], parts[1], parts[2]));
     }
@@ -111,7 +104,6 @@ fn combine(map1: &Vec<(i64, i64, i64)>, map2: &Vec<(i64, i64, i64)>) -> Vec<(i64
             // Otherwise, continue with any remainder to the next map 2 entry
         }
 
-
         if size(&e) > 0 {
             new_map.push(e);
         }
@@ -121,19 +113,29 @@ fn combine(map1: &Vec<(i64, i64, i64)>, map2: &Vec<(i64, i64, i64)>) -> Vec<(i64
 }
 
 // Returns the start of the source range of the map entry
-fn src_start(e: &(i64, i64, i64)) -> i64 { e.1 }
+fn src_start(e: &(i64, i64, i64)) -> i64 {
+    e.1
+}
 
 // Returns the end of the source range of the map entry
-fn src_end(e: &(i64, i64, i64)) -> i64 { e.1 + e.2 }
+fn src_end(e: &(i64, i64, i64)) -> i64 {
+    e.1 + e.2
+}
 
 // Returns the start of the destination range of the map entry
-fn dst_start(e: &(i64, i64, i64)) -> i64 { e.0 }
+fn dst_start(e: &(i64, i64, i64)) -> i64 {
+    e.0
+}
 
 // Returns the end of the destination range of the map entry
-fn dst_end(e: &(i64, i64, i64)) -> i64 { e.0 + e.2 }
+fn dst_end(e: &(i64, i64, i64)) -> i64 {
+    e.0 + e.2
+}
 
 // Returns the size of the range of the map entry
-fn size(e: &(i64, i64, i64)) -> i64 { e.2 }
+fn size(e: &(i64, i64, i64)) -> i64 {
+    e.2
+}
 
 // Combine sorted map entries with adjacent source and destination ranges
 fn reduce(map: &Vec<(i64, i64, i64)>) -> Vec<(i64, i64, i64)> {
@@ -147,11 +149,9 @@ fn reduce(map: &Vec<(i64, i64, i64)>) -> Vec<(i64, i64, i64)> {
         while e1.is_some() {
             if adjacent(&new_e, e1.unwrap()) {
                 new_e = join(&new_e, e1.unwrap());
-            }
-            else if adjacent(e1.unwrap(), &new_e) {
+            } else if adjacent(e1.unwrap(), &new_e) {
                 new_e = join(e1.unwrap(), &new_e);
-            }
-            else {
+            } else {
                 // If it is not adjacent, then there are no more entries to combine with this one
                 break;
             }

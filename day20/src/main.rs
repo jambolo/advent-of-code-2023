@@ -1,6 +1,6 @@
-use regex::Regex;
 use common::load;
-use std::collections::{ HashMap, VecDeque };
+use regex::Regex;
+use std::collections::{HashMap, VecDeque};
 
 const NUMBER_OF_BUTTON_PRESSES: i64 = 1000;
 
@@ -24,7 +24,7 @@ impl<'a> Module<'a> {
 }
 
 fn main() {
-    println!("Day 20, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 20, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
 
     let lines = load::lines().unwrap();
     let mut modules = load_modules(&lines);
@@ -42,7 +42,7 @@ fn main() {
                 low_count += 1;
             } else {
                 high_count += 1;
-            }    
+            }
             let mut optional_output: Option<bool> = None;
             if let Some(module) = modules.get_mut(to) {
                 if to == "broadcaster" {
@@ -54,11 +54,11 @@ fn main() {
                                 module.state = !module.state;
                                 optional_output = Some(module.state);
                             }
-                        },
+                        }
                         "&" => {
                             module.sources.insert(from, input);
                             optional_output = Some(!module.sources.iter().all(|(_, pulse)| *pulse));
-                        },
+                        }
                         _ => {
                             panic!("Unknown module type: {}", module.module_type);
                         }
@@ -80,7 +80,7 @@ fn main() {
     println!("Answer: {}", low_count * high_count);
 }
 
-fn load_modules<'a>(lines: &'a Vec<String>) -> HashMap<&'a str, Module<'a>>{
+fn load_modules<'a>(lines: &'a Vec<String>) -> HashMap<&'a str, Module<'a>> {
     let mut modules: HashMap<&'a str, Module> = HashMap::new();
 
     // Create the modules from the input
@@ -101,7 +101,10 @@ fn load_modules<'a>(lines: &'a Vec<String>) -> HashMap<&'a str, Module<'a>>{
     for (name, module) in &modules {
         for destination in &module.destinations {
             if modules.get(destination).is_some() {
-                sources_by_destination.entry(destination).or_insert_with(HashMap::new).insert(name, false);
+                sources_by_destination
+                    .entry(destination)
+                    .or_insert_with(HashMap::new)
+                    .insert(name, false);
             } else {
                 panic!("Destination module not found: {}", destination);
             }
@@ -110,7 +113,11 @@ fn load_modules<'a>(lines: &'a Vec<String>) -> HashMap<&'a str, Module<'a>>{
 
     // Save each module's sources
     for (name, module) in &mut modules {
-        module.sources = if let Some(sources) = sources_by_destination.get(name) { sources.clone() } else { HashMap::new() };
+        module.sources = if let Some(sources) = sources_by_destination.get(name) {
+            sources.clone()
+        } else {
+            HashMap::new()
+        };
     }
 
     modules

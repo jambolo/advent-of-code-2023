@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use common::load;
 
 fn main() {
-    println!("Day 12, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 12, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     let mut sum: i64 = 0;
@@ -104,9 +104,12 @@ fn number_of_permutations(
 fn parse_line(line: &str) -> (usize, u128, u128, Vec<i32>) {
     let parts: Vec<&str> = line.split_whitespace().collect();
     let (template, mask) = parse_record(parts[0]);
-    let numbers: Vec<i32> = parts[1].split(',').map(|s| s.parse().expect("Failed to parse number")).collect();
+    let numbers: Vec<i32> = parts[1]
+        .split(',')
+        .map(|s| s.parse().expect("Failed to parse number"))
+        .collect();
 
-    if cfg!(feature="part2") {
+    if cfg!(feature = "part2") {
         let fold_length = parts[0].len();
         assert!(fold_length * 5 <= 128);
         let unfolded_size = fold_length * 5 + 4;

@@ -3,7 +3,7 @@ use common::load;
 const EXPANSION: i64 = 1000000 - 1;
 
 fn main() {
-    println!("Day 11, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 11, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let galaxy = load::lines().unwrap();
 
     let (xr, xc) = expand(&galaxy);
@@ -34,7 +34,6 @@ fn distance(star1: &(usize, usize), star2: &(usize, usize), xr: &Vec<usize>, xc:
     let dc = (star1.1 as i64 - star2.1 as i64).abs() + column_expansion;
     (dr + dc) as i64
 }
-
 
 fn number_of_expansions_between(vec: &Vec<usize>, a: usize, b: usize) -> i64 {
     let start = match vec.binary_search(&a) {

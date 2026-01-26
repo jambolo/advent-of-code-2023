@@ -4,15 +4,24 @@ const DIGIT_NAMES: [&str; 10] = ["zero", "one", "two", "three", "four", "five", 
 
 // Returns the first digit in a string
 fn first_number_in(s: &str) -> Option<(usize, u32)> {
-    s.char_indices()
-        .find_map(|(i, c)| if c.is_ascii_digit() { Some((i, c.to_digit(10)?)) } else { None })
+    s.char_indices().find_map(|(i, c)| {
+        if c.is_ascii_digit() {
+            Some((i, c.to_digit(10)?))
+        } else {
+            None
+        }
+    })
 }
 
 // Returns the last digit in a string
 fn last_number_in(s: &str) -> Option<(usize, u32)> {
-    s.char_indices()
-        .rev()
-        .find_map(|(i, c)| if c.is_ascii_digit() { Some((i, c.to_digit(10)?)) } else { None })
+    s.char_indices().rev().find_map(|(i, c)| {
+        if c.is_ascii_digit() {
+            Some((i, c.to_digit(10)?))
+        } else {
+            None
+        }
+    })
 }
 
 // Returns the first digit by name in a string
@@ -68,7 +77,7 @@ fn last_value((a1, a2): (usize, u32), (b1, b2): (usize, usize)) -> u32 {
     }
 }
 fn main() {
-    println!("Day 1, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 1, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     let mut sum = 0;
@@ -78,13 +87,13 @@ fn main() {
         let first_name = first_name_in(&line);
         if first_name.is_some() {
             first_digit = first_value(first_number, first_name.unwrap());
-        } 
+        }
         let last_number = last_number_in(&line).unwrap();
         let (_, mut last_digit) = last_number;
         let last_name = last_name_in(&line);
         if last_name.is_some() {
             last_digit = last_value(last_number, last_name.unwrap());
-        } 
+        }
         sum += first_digit * 10 + last_digit;
     }
 

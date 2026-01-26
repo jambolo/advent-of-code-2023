@@ -1,7 +1,7 @@
 use common::load;
 
 fn main() {
-    println!("Day 9, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 9, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     #[cfg(not(feature = "part2"))]
@@ -10,9 +10,7 @@ fn main() {
     let mut psum: i64 = 0;
 
     for line in lines {
-        let numbers: Vec<i64> = line.split_ascii_whitespace()
-                                    .map(|s| s.parse().unwrap())
-                                    .collect();
+        let numbers: Vec<i64> = line.split_ascii_whitespace().map(|s| s.parse().unwrap()).collect();
 
         let mut ends: Vec<i64> = Vec::new();
         let mut starts: Vec<i64> = Vec::new();
@@ -58,7 +56,7 @@ fn all_zeros(sequence: &Vec<i64>) -> bool {
 fn next_sequence(sequence: &Vec<i64>) -> Vec<i64> {
     let mut new_sequence = Vec::new();
     for i in 1..sequence.len() {
-        new_sequence.push(sequence[i] - sequence[i-1]);
+        new_sequence.push(sequence[i] - sequence[i - 1]);
     }
     new_sequence
 }

@@ -13,19 +13,21 @@ struct Stone {
 }
 
 fn main() {
-    println!("Day 24, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 24, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
 
     // Load the data
     let lines = load::lines().unwrap();
     let stones = parse_stones(&lines);
 
     // Find all intersections
-    let intersection_count = stones.iter().enumerate()
+    let intersection_count = stones
+        .iter()
+        .enumerate()
         .flat_map(|(i, stone_i)| {
-            stones.iter().skip(i + 1)
-                .filter_map(move |stone_j| {
-                    intersects_xy(stone_i, stone_j)
-                })
+            stones
+                .iter()
+                .skip(i + 1)
+                .filter_map(move |stone_j| intersects_xy(stone_i, stone_j))
         })
         .count();
     println!("Intersection count: {}", intersection_count);
@@ -35,11 +37,11 @@ fn parse_stones(lines: &Vec<String>) -> Vec<Stone> {
     let mut stones = Vec::new();
     for line in lines {
         let pv: Vec<&str> = line.split("@").collect();
-        let position:Vec<f64> = pv[0].split(",").map(|s| s.trim().parse().unwrap()).collect();
-        let velocity:Vec<f64> = pv[1].split(",").map(|s| s.trim().parse().unwrap()).collect();
+        let position: Vec<f64> = pv[0].split(",").map(|s| s.trim().parse().unwrap()).collect();
+        let velocity: Vec<f64> = pv[1].split(",").map(|s| s.trim().parse().unwrap()).collect();
         stones.push(Stone {
             position: (position[0], position[1], position[2]),
-            velocity: (velocity[0], velocity[1], velocity[2])
+            velocity: (velocity[0], velocity[1], velocity[2]),
         });
     }
     stones
@@ -85,7 +87,6 @@ fn parse_stones(lines: &Vec<String>) -> Vec<Stone> {
 //}
 
 fn intersects_xy(s1: &Stone, s2: &Stone) -> Option<(f64, f64)> {
-
     let p1 = (s1.position.0, s1.position.1);
     let p2 = (s2.position.0, s2.position.1);
     let v1 = normalize_xy(s1.velocity.0, s1.velocity.1);
@@ -102,7 +103,7 @@ fn intersects_xy(s1: &Stone, s2: &Stone) -> Option<(f64, f64)> {
 
     let x = p1.0 + t1 * v1.0;
     let y = p1.1 + t1 * v1.1;
-    if t1 > 0.0 && t2 > 0.0 && y >= BOUNDS.1.0 && y <= BOUNDS.1.1 && x >= BOUNDS.0.0 && x <= BOUNDS.0.1 {
+    if t1 > 0.0 && t2 > 0.0 && y >= BOUNDS.1 .0 && y <= BOUNDS.1 .1 && x >= BOUNDS.0 .0 && x <= BOUNDS.0 .1 {
         Some((x, y))
     } else {
         None

@@ -1,7 +1,7 @@
 use common::load;
 
 fn main() {
-    println!("Day 13, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 13, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
     let maps = load_maps(&lines);
     let mut sum: i32 = 0;
@@ -19,7 +19,7 @@ fn main() {
 
 fn load_maps(lines: &[String]) -> Vec<Vec<Vec<char>>> {
     let mut maps: Vec<Vec<Vec<char>>> = vec![];
-    let mut map:Vec<Vec<char>> = vec![];
+    let mut map: Vec<Vec<char>> = vec![];
     for line in lines {
         if line.is_empty() {
             if !map.is_empty() {
@@ -41,7 +41,7 @@ fn find_vertical_mirror(m: &Vec<Vec<char>>) -> Option<i32> {
     for i in 1..num_columns {
         let span = std::cmp::min(i, num_columns - i);
         let mut mirrored = true;
-        if cfg!(feature="part2") {
+        if cfg!(feature = "part2") {
             let mut smudged = false;
             for j in 1..=span {
                 let same;
@@ -101,7 +101,7 @@ fn find_horizontal_mirror(m: &Vec<Vec<char>>) -> Option<i32> {
     for i in 1..m.len() {
         let span = std::cmp::min(i, m.len() - i);
         let mut mirrored = true;
-        if cfg!(feature="part2") {
+        if cfg!(feature = "part2") {
             let mut smudged = false;
             for j in 1..=span {
                 let same;
@@ -148,7 +148,7 @@ fn rows_differ_by_one(m: &Vec<Vec<char>>, i0: usize, i1: usize) -> bool {
     for j in 0..m[0].len() {
         if m[i0][j] != m[i1][j] {
             if differ_by_one {
-                return false;   // If we already found one difference, return false
+                return false; // If we already found one difference, return false
             }
             differ_by_one = true;
         }

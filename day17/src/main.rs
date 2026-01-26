@@ -1,12 +1,12 @@
+use common::load;
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
-use common::load;
 
-const MIN_RUN: usize = if cfg!(feature="part2") { 4 } else { 1 };
-const MAX_RUN: usize = if cfg!(feature="part2") { 10 } else { 3 };
+const MIN_RUN: usize = if cfg!(feature = "part2") { 4 } else { 1 };
+const MAX_RUN: usize = if cfg!(feature = "part2") { 10 } else { 3 };
 
 fn main() {
-    println!("Day 17, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 17, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
 
     let map = load::numbers_map().unwrap();
     let start: (usize, usize) = (0, 0);
@@ -14,7 +14,7 @@ fn main() {
 
     // The heuristic is a map of the lowest unrestricted costs from each cell to the goal
     let lowest_unrestricted_costs = build_lowest_unrestricted_costs_map(&map, goal);
-    let h = |(r, c): (usize, usize)| { lowest_unrestricted_costs[r][c] };
+    let h = |(r, c): (usize, usize)| lowest_unrestricted_costs[r][c];
 
     let cost = shortest_path(start, goal, h, &map);
     println!("Shortest path: {}", cost);
@@ -37,7 +37,7 @@ fn build_lowest_unrestricted_costs_map(edge_costs: &Vec<Vec<i32>>, goal: (usize,
             Some(self.cmp(other))
         }
     }
-    
+
     fn get_neighbors(&(r, c): &(usize, usize), &(height, width): &(usize, usize)) -> Vec<(usize, usize)> {
         let mut neighbors: Vec<(usize, usize)> = Vec::new();
         if c >= 1 {
@@ -60,7 +60,10 @@ fn build_lowest_unrestricted_costs_map(edge_costs: &Vec<Vec<i32>>, goal: (usize,
     let mut costs_to_goal = vec![vec![std::i32::MAX; width]; height];
 
     let mut open = BinaryHeap::new();
-    open.push(Node { location: (goal.0, goal.1), cost: 0 });    // Start from the goal
+    open.push(Node {
+        location: (goal.0, goal.1),
+        cost: 0,
+    }); // Start from the goal
 
     while let Some(node) = open.pop() {
         if node.cost < costs_to_goal[node.location.0][node.location.1] {
@@ -69,7 +72,10 @@ fn build_lowest_unrestricted_costs_map(edge_costs: &Vec<Vec<i32>>, goal: (usize,
             let neighbors: Vec<(usize, usize)> = get_neighbors(&node.location, &(height, width));
             for &(r, c) in &neighbors {
                 if neighbor_cost < costs_to_goal[r][c] {
-                    open.push(Node { location: (r, c), cost: neighbor_cost });
+                    open.push(Node {
+                        location: (r, c),
+                        cost: neighbor_cost,
+                    });
                 }
             }
         }
@@ -80,8 +86,8 @@ fn build_lowest_unrestricted_costs_map(edge_costs: &Vec<Vec<i32>>, goal: (usize,
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct Node {
     position: (usize, usize, usize), // (r, c, d)
-    f: i32,     // f = g + h
-    g: i32,     // cost from start
+    f: i32,                          // f = g + h
+    g: i32,                          // cost from start
 }
 impl Ord for Node {
     fn cmp(&self, other: &Self) -> Ordering {
@@ -94,16 +100,23 @@ impl PartialOrd for Node {
     }
 }
 
-fn shortest_path(start: (usize, usize), goal: (usize, usize), h: impl Fn((usize, usize)) -> i32, map: &Vec<Vec<i32>>) -> i32
-{
+fn shortest_path(start: (usize, usize), goal: (usize, usize), h: impl Fn((usize, usize)) -> i32, map: &Vec<Vec<i32>>) -> i32 {
     let width = map[0].len();
     let height = map.len();
     let mut f = vec![vec![vec![std::i32::MAX; 2]; width]; height]; // f[r][c][d]
     let mut open: BinaryHeap<Node> = BinaryHeap::new();
-    
+
     // Push the start node to the open set (both directions)
-    open.push(Node { position: (start.0, start.1, 0), f: 0 + h(start), g: 0 });
-    open.push(Node { position: (start.0, start.1, 1), f: 0 + h(start), g: 0 });
+    open.push(Node {
+        position: (start.0, start.1, 0),
+        f: 0 + h(start),
+        g: 0,
+    });
+    open.push(Node {
+        position: (start.0, start.1, 1),
+        f: 0 + h(start),
+        g: 0,
+    });
 
     while let Some(node) = open.pop() {
         if node.position.0 == goal.0 && node.position.1 == goal.1 {
@@ -112,13 +125,13 @@ fn shortest_path(start: (usize, usize), goal: (usize, usize), h: impl Fn((usize,
         if node.f < f[node.position.0][node.position.1][node.position.2] {
             f[node.position.0][node.position.1][node.position.2] = node.f;
             let neighbors: Vec<Node> = get_neighbors(&node, &map);
-        for mut n in neighbors {
+            for mut n in neighbors {
                 let neighbor_location = (n.position.0, n.position.1);
                 n.f = n.g + h(neighbor_location);
                 open.push(n);
-                }
             }
         }
+    }
     std::i32::MAX
 }
 
@@ -135,31 +148,31 @@ fn get_neighbors(node: &Node, map: &Vec<Vec<i32>>) -> Vec<Node> {
     if d != 0 {
         // Push left movements only if not on the left edge.
         if c >= MIN_RUN {
-        neighbors.extend(left_run(node, map));
+            neighbors.extend(left_run(node, map));
         }
         // Push right only if not on the right edge
         if c + MIN_RUN < width {
             neighbors.extend(right_run(node, map, width));
-            }
         }
+    }
 
     // Move up or down if not coming from up or down
     if d != 1 {
         // Push up only if not on the top edge
         if r >= MIN_RUN {
             neighbors.extend(up_run(node, map));
-    }
+        }
         // Push down only if not on the bottom edge
         if r + MIN_RUN < height {
             neighbors.extend(down_run(node, map, height));
-            }
         }
-
-    neighbors
     }
 
+    neighbors
+}
+
 fn down_run(node: &Node, map: &Vec<Vec<i32>>, height: usize) -> Vec<Node> {
-    let r  = node.position.0;
+    let r = node.position.0;
     let c = node.position.1;
     assert!(r + MIN_RUN < height);
 
@@ -171,12 +184,12 @@ fn down_run(node: &Node, map: &Vec<Vec<i32>>, height: usize) -> Vec<Node> {
             position: (nr, c, 1),
             f: 0, // Filled in later
             g: accumulated_g,
-                };
+        };
         run.push(down);
     }
 
     run
-            }
+}
 
 fn up_run(node: &Node, map: &Vec<Vec<i32>>) -> Vec<Node> {
     let r = node.position.0;
@@ -187,16 +200,16 @@ fn up_run(node: &Node, map: &Vec<Vec<i32>>) -> Vec<Node> {
     let mut run: Vec<Node> = Vec::new();
     for nr in (r.saturating_sub(MAX_RUN)..=(r - MIN_RUN)).rev() {
         accumulated_g += map[nr][c];
-            let up = Node {
+        let up = Node {
             position: (nr, c, 1),
             f: 0, // Filled in later
             g: accumulated_g,
-            };
+        };
         run.push(up);
-        }
+    }
 
     run
-    }
+}
 
 fn right_run(node: &Node, map: &Vec<Vec<i32>>, width: usize) -> Vec<Node> {
     let r = node.position.0;
@@ -211,12 +224,12 @@ fn right_run(node: &Node, map: &Vec<Vec<i32>>, width: usize) -> Vec<Node> {
             position: (r, nc, 0),
             f: 0, // Filled in later
             g: accumulated_g,
-                };
+        };
         run.push(right);
     }
 
     run
-            }
+}
 
 fn left_run(node: &Node, map: &Vec<Vec<i32>>) -> Vec<Node> {
     let r = node.position.0;
@@ -231,8 +244,8 @@ fn left_run(node: &Node, map: &Vec<Vec<i32>>) -> Vec<Node> {
             position: (r, nc, 0),
             f: 0, // Filled in later
             g: accumulated_g,
-            };
+        };
         run.push(left);
-        }
+    }
     run
 }

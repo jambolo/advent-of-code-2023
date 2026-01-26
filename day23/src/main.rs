@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use common::load;
+use std::collections::HashMap;
 
 #[derive(Debug)]
 struct Node {
@@ -10,7 +10,11 @@ struct Node {
 
 impl Node {
     fn new(x: usize, y: usize) -> Node {
-        Node { x, y, edges: HashMap::new() }
+        Node {
+            x,
+            y,
+            edges: HashMap::new(),
+        }
     }
     fn add_edge(&mut self, to: usize, cost: i32) {
         self.edges.insert(to, cost);
@@ -27,7 +31,7 @@ struct Path {
 }
 
 fn main() {
-    println!("Day 23, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 23, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
 
     // Load the map
     let map = load::map().unwrap();
@@ -41,7 +45,6 @@ fn main() {
     nodes.push(Node::new(goal.0, goal.1));
 
     follow_path(&map, 0, (0, 1), false, &mut nodes);
-
 
     // Now we have a graph, let's find all of the paths
     let paths = enumerate_paths(&nodes, 0, 1);
@@ -72,7 +75,7 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
         let c = map[pos.1][pos.0];
         match c {
             '>' => {
-                if cfg!(feature="part2") {
+                if cfg!(feature = "part2") {
                     let directions = next_directions(&map, pos, dir);
                     if is_node(&map, pos) {
                         // This is a new node
@@ -82,13 +85,13 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                         }
                         break; // reachded node so done with this path
                     } else if directions.len() == 0 {
-                        break;  // dead end
+                        break; // dead end
                     }
                     debug_assert!(directions.len() == 1);
                     next_dir = directions[0];
                 } else {
                     if dir.0 == -1 && dir.1 == 0 {
-                        break;  // blocked
+                        break; // blocked
                     } else {
                         next_dir = (1, 0);
                         if is_node(&map, pos) {
@@ -101,9 +104,9 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                         }
                     }
                 }
-            },
+            }
             '^' => {
-                if cfg!(feature="part2") {
+                if cfg!(feature = "part2") {
                     let directions = next_directions(&map, pos, dir);
                     if is_node(&map, pos) {
                         // This is a new node
@@ -113,13 +116,13 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                         }
                         break; // reachded node so done with this path
                     } else if directions.len() == 0 {
-                        break;  // dead end
+                        break; // dead end
                     }
                     debug_assert!(directions.len() == 1);
                     next_dir = directions[0];
                 } else {
                     if dir.0 == 0 && dir.1 == 1 {
-                        break;  // blocked
+                        break; // blocked
                     } else {
                         next_dir = (0, -1);
                         if is_node(&map, pos) {
@@ -132,9 +135,9 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                         }
                     }
                 }
-            },
+            }
             '<' => {
-                if cfg!(feature="part2") {
+                if cfg!(feature = "part2") {
                     let directions = next_directions(&map, pos, dir);
                     if is_node(&map, pos) {
                         // This is a new node
@@ -144,13 +147,13 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                         }
                         break; // reachded node so done with this path
                     } else if directions.len() == 0 {
-                        break;  // dead end
+                        break; // dead end
                     }
                     debug_assert!(directions.len() == 1);
                     next_dir = directions[0];
                 } else {
                     if dir.0 == 1 && dir.1 == 0 {
-                        break;  // blocked
+                        break; // blocked
                     } else {
                         next_dir = (-1, 0);
                         if is_node(&map, pos) {
@@ -163,9 +166,9 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                         }
                     }
                 }
-            },
+            }
             'v' => {
-                if cfg!(feature="part2") {
+                if cfg!(feature = "part2") {
                     let directions = next_directions(&map, pos, dir);
                     if is_node(&map, pos) {
                         // This is a new node
@@ -175,13 +178,13 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                         }
                         break; // reachded node so done with this path
                     } else if directions.len() == 0 {
-                        break;  // dead end
+                        break; // dead end
                     }
                     debug_assert!(directions.len() == 1);
                     next_dir = directions[0];
                 } else {
                     if dir.0 == 0 && dir.1 == -1 {
-                        break;  // blocked
+                        break; // blocked
                     } else {
                         next_dir = (0, 1);
                         if is_node(&map, pos) {
@@ -194,7 +197,7 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                         }
                     }
                 }
-            },
+            }
             '.' => {
                 let directions = next_directions(&map, pos, dir);
                 if is_node(&map, pos) {
@@ -205,11 +208,11 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                     }
                     break; // reachded node so done with this path
                 } else if directions.len() == 0 {
-                    break;  // dead end
+                    break; // dead end
                 }
                 debug_assert!(directions.len() == 1);
                 next_dir = directions[0];
-            },
+            }
             _ => {
                 panic!("Unexpected: {} at ({}, {})", c, pos.0, pos.1);
             }
@@ -221,7 +224,7 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
     }
 }
 
-fn add_node(nodes: &mut Vec<Node>, pos: (usize, usize), from: usize, cost: i32, directed:bool) -> usize {
+fn add_node(nodes: &mut Vec<Node>, pos: (usize, usize), from: usize, cost: i32, directed: bool) -> usize {
     nodes.push(Node::new(pos.0, pos.1));
     let to = nodes.len() - 1;
     nodes[from].add_edge(to, cost);
@@ -255,7 +258,11 @@ fn next_directions(map: &Vec<Vec<char>>, pos: (usize, usize), dir: (i32, i32)) -
 }
 
 fn find_node_at(pos: (usize, usize), nodes: &Vec<Node>) -> Option<usize> {
-    nodes.iter().enumerate().find(|(_, node)| node.x == pos.0 && node.y == pos.1).map(|(i, _)| i)
+    nodes
+        .iter()
+        .enumerate()
+        .find(|(_, node)| node.x == pos.0 && node.y == pos.1)
+        .map(|(i, _)| i)
 }
 
 fn is_node(map: &Vec<Vec<char>>, pos: (usize, usize)) -> bool {
@@ -285,7 +292,7 @@ fn enumerate_paths(nodes: &Vec<Node>, from: usize, goal: usize) -> Vec<Path> {
     let mut paths = Vec::new();
     let mut path = Vec::new();
     path.push(from);
-    enumerate_paths_rec(nodes, from, goal, path.clone(), 0,  &mut paths);
+    enumerate_paths_rec(nodes, from, goal, path.clone(), 0, &mut paths);
     paths
 }
 
@@ -294,7 +301,10 @@ fn enumerate_paths_rec(nodes: &Vec<Node>, from: usize, goal: usize, mut path: Ve
     for (next, cost) in &from_node.edges {
         if *next == goal {
             path.push(goal);
-            paths.push(Path { _nodes: path.clone(), cost: total_cost + cost });
+            paths.push(Path {
+                _nodes: path.clone(),
+                cost: total_cost + cost,
+            });
             path.pop();
         } else if !path.contains(next) {
             path.push(*next);

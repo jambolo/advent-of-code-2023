@@ -1,5 +1,5 @@
-use regex::Regex;
 use common::load;
+use regex::Regex;
 
 #[derive(Debug)]
 struct Step {
@@ -8,13 +8,13 @@ struct Step {
 }
 
 fn main() {
-    println!("Day 18, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 18, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
 
     // Color is ignored
     let steps_re = Regex::new(r"^([UDLR])\s+(\d+)\s+\(#[0-9a-fA-F]+\)$").unwrap();
 
     let lines = load::lines().unwrap();
-    let mut steps:Vec<Step> = Vec::new();
+    let mut steps: Vec<Step> = Vec::new();
     for line in lines {
         if let Some(captures) = steps_re.captures(line.as_str()) {
             let step = Step {
@@ -91,7 +91,7 @@ fn create_map(width: usize, height: usize, start: (usize, usize), steps: &Vec<St
 fn find_interior_point(map: &Vec<Vec<char>>) -> (usize, usize) {
     // We are guaranteed to find an interior point on the second row because a horizontal boundary must exist on the
     // first row. We start at the left edge of the second row and move right until we find a wall. The next empty
-    // space is an interior point if the space up and left is a wall. Otherwise, we are still outside. 
+    // space is an interior point if the space up and left is a wall. Otherwise, we are still outside.
     let y: usize = 1;
     let mut x: usize = 0;
 
@@ -113,7 +113,7 @@ fn find_interior_point(map: &Vec<Vec<char>>) -> (usize, usize) {
         // Check if the space up and left is a wall
         debug_assert!(x > 0);
         debug_assert!(y > 0);
-        if map[y-1][x-1] == '#' {
+        if map[y - 1][x - 1] == '#' {
             return (x, y);
         }
     }
@@ -131,24 +131,21 @@ fn flood_fill(map: &mut Vec<Vec<char>>, start: (usize, usize)) {
         if map[y][x] != '#' {
             map[y][x] = '#';
             if x > 0 {
-                stack.push((x-1, y));
+                stack.push((x - 1, y));
             }
             if x < right_edge {
-                stack.push((x+1, y));
+                stack.push((x + 1, y));
             }
             if y > 0 {
-                stack.push((x, y-1));
+                stack.push((x, y - 1));
             }
             if y < bottom_edge {
-                stack.push((x, y+1));
+                stack.push((x, y + 1));
             }
         }
     }
 }
 
 fn compute_volume(map: &Vec<Vec<char>>) -> i32 {
-    map.iter()
-        .flat_map(|row| row.iter())
-        .filter(|&&cell| cell == '#')
-        .count() as i32
+    map.iter().flat_map(|row| row.iter()).filter(|&&cell| cell == '#').count() as i32
 }

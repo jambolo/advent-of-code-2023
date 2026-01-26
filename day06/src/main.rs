@@ -1,7 +1,7 @@
 use common::load;
 
 fn main() {
-    println!("Day 6, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 6, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     let times = parse_line(&lines[0]);
@@ -19,11 +19,6 @@ fn main() {
 }
 
 fn parse_line(line: &String) -> f64 {
-    let data = line
-        .split(":")
-        .nth(1)
-        .unwrap()
-        .replace(" ", "")
-        .parse::<f64>().unwrap();
-data
+    let data = line.split(":").nth(1).unwrap().replace(" ", "").parse::<f64>().unwrap();
+    data
 }

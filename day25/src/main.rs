@@ -1,8 +1,8 @@
-use std::collections::HashMap;
 use common::load;
+use std::collections::HashMap;
 
 fn main() {
-    println!("Day 25, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 25, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
 
     // Load the data
     let lines = load::lines().unwrap();
@@ -16,7 +16,7 @@ fn main() {
     // find the longest path from the first node three times. In case, removing the path removes more than one of
     // the three edges, we check if the graph is split after each iteration. This all sounds good, but I don't know
     // it correct in theory.
-    
+
     let node0 = *graph.keys().next().unwrap();
     while !any_node_unreachable_from(&graph, node0) {
         let longest_path: Vec<usize> = find_path_from_farthest_node(&graph, node0);
@@ -54,11 +54,7 @@ fn parse_graph(lines: &Vec<String>) -> HashMap<usize, Vec<usize>> {
     graph
 }
 
-fn register_node<'a>(
-    name: &'a str,
-    node_id_map: &mut HashMap<&'a str, usize>,
-    node_name_map: &mut Vec<&'a str>
-) -> usize {
+fn register_node<'a>(name: &'a str, node_id_map: &mut HashMap<&'a str, usize>, node_name_map: &mut Vec<&'a str>) -> usize {
     if let Some(&id) = node_id_map.get(name) {
         id
     } else {

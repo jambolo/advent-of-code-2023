@@ -3,22 +3,22 @@ use common::load;
 const CYCLES: i64 = 1000000;
 
 fn main() {
-    println!("Day 14, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 14, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
-    let mut map:Vec<Vec<char>> = vec![];
+    let mut map: Vec<Vec<char>> = vec![];
     for line in lines {
         map.push(line.chars().collect());
     }
-//    print_map(&map);
+    //    print_map(&map);
 
-    if cfg!(feature="part2") {
+    if cfg!(feature = "part2") {
         let mut previous = map.clone();
         for i in 0..CYCLES {
             tip_north(&mut map);
             tip_west(&mut map);
             tip_south(&mut map);
             tip_east(&mut map);
-            if i % (CYCLES/10) == 0 {
+            if i % (CYCLES / 10) == 0 {
                 println!("Cycles: {:.0}%", (i as f64 / CYCLES as f64 * 100.0).round());
             }
             if previous == map {
@@ -42,7 +42,7 @@ fn tip_north(map: &mut Vec<Vec<char>>) {
         for j in 0..cols {
             if map[i][j] == 'O' {
                 let mut k = i;
-                while k > 0 && map[k - 1][j] == '.'  {
+                while k > 0 && map[k - 1][j] == '.' {
                     k -= 1;
                 }
                 if map[k][j] == '.' {
@@ -62,7 +62,7 @@ fn tip_west(map: &mut Vec<Vec<char>>) {
         for i in 0..rows {
             if map[i][j] == 'O' {
                 let mut k = j;
-                while k > 0 && map[i][k - 1] == '.'  {
+                while k > 0 && map[i][k - 1] == '.' {
                     k -= 1;
                 }
                 if map[i][k] == '.' {
@@ -82,7 +82,7 @@ fn tip_south(map: &mut Vec<Vec<char>>) {
         for j in 0..cols {
             if map[i][j] == 'O' {
                 let mut k = i;
-                while k < rows - 1 && map[k + 1][j] == '.'  {
+                while k < rows - 1 && map[k + 1][j] == '.' {
                     k += 1;
                 }
                 if map[k][j] == '.' {
@@ -102,7 +102,7 @@ fn tip_east(map: &mut Vec<Vec<char>>) {
         for i in 0..rows {
             if map[i][j] == 'O' {
                 let mut k = j;
-                while k < cols - 1 && map[i][k + 1] == '.'  {
+                while k < cols - 1 && map[i][k + 1] == '.' {
                     k += 1;
                 }
                 if map[i][k] == '.' {
@@ -128,6 +128,5 @@ fn row_load(map: &Vec<Vec<char>>, row: usize) -> i64 {
             sum += 1;
         }
     }
-    sum * ((map.len() - row)) as i64
+    sum * (map.len() - row) as i64
 }
-

@@ -1,5 +1,5 @@
-use regex::Regex;
 use common::load;
+use regex::Regex;
 use std::collections::HashMap;
 
 //a<2006:qkq,m>2090:A,rfg
@@ -20,7 +20,7 @@ struct Part {
 }
 
 fn main() {
-    println!("Day 19, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 19, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
 
     let lines = load::lines().unwrap();
 
@@ -81,19 +81,18 @@ fn process_workflow(workflows: &HashMap<String, Vec<Rule>>, workflow: &str, part
                         if value < threshold {
                             return rule.workflow.clone();
                         }
-                    },
+                    }
                     '>' => {
                         if value > threshold {
                             return rule.workflow.clone();
                         }
-                    },
+                    }
                     _ => panic!("Invalid comparison: {}", cmp),
                 }
             } else {
                 return rule.workflow.clone();
             }
         }
-
     } else {
         panic!("No workflow {:?}", workflow);
     }
@@ -120,10 +119,20 @@ fn parse_rule(s: &str) -> Rule {
             let cmp = captures.get(2).unwrap().as_str().chars().next();
             let threshold = captures.get(3).map(|m| m.as_str().parse().unwrap());
             let workflow = captures.get(4).unwrap().as_str().to_string();
-            return Rule { attribute, cmp, threshold, workflow, };
+            return Rule {
+                attribute,
+                cmp,
+                threshold,
+                workflow,
+            };
         } else {
             let workflow = captures.get(5).unwrap().as_str().to_string();
-            return Rule { attribute: None, cmp: None, threshold: None, workflow, };
+            return Rule {
+                attribute: None,
+                cmp: None,
+                threshold: None,
+                workflow,
+            };
         }
     }
     panic!("Invalid rule string: {}", s);

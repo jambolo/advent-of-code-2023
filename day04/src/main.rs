@@ -1,7 +1,7 @@
 use common::load;
 
 fn main() {
-    println!("Day 4, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 4, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     // Parse the cards
@@ -26,7 +26,7 @@ fn main() {
         count += cards[i].0;
         let winners = intersection(&cards[i].1, &cards[i].2);
         if winners.len() > 0 {
-            for j in i + 1 ..= i + winners.len() {
+            for j in i + 1..=i + winners.len() {
                 cards[j].0 += cards[i].0;
             }
         }
@@ -35,7 +35,7 @@ fn main() {
     println!("Count: {}", count);
 }
 
- // Returns the intersection of two sorted vectors
+// Returns the intersection of two sorted vectors
 fn intersection(a: &Vec<i32>, b: &Vec<i32>) -> Vec<i32> {
     let mut result = Vec::new();
     let mut i = 0;

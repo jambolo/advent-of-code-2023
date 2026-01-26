@@ -1,21 +1,21 @@
-use regex::Regex;
 use common::load;
+use regex::Regex;
 
 // which games would have been possible if the bag contained only 12 red cubes, 13 green cubes, and 14 blue cubes?
-const MAX: (i32, i32, i32) = ( 12, 13, 14 );
+const MAX: (i32, i32, i32) = (12, 13, 14);
 
 fn main() {
-    println!("Day 2, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 2, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
 
     let games = load::lines().unwrap();
 
-    #[cfg(not(feature="part2"))]
+    #[cfg(not(feature = "part2"))]
     part1(&games);
-    #[cfg(feature="part2")]
+    #[cfg(feature = "part2")]
     part2(&games);
 }
 
-#[cfg(not(feature="part2"))]
+#[cfg(not(feature = "part2"))]
 fn part1(games: &[String]) {
     let mut id_sum = 0;
 
@@ -57,7 +57,7 @@ fn part1(games: &[String]) {
     println!("Sum of game ids is {}", id_sum);
 }
 
-#[cfg(feature="part2")]
+#[cfg(feature = "part2")]
 fn part2(games: &[String]) {
     let mut sum_of_powers = 0;
 

@@ -1,14 +1,14 @@
-use std::collections::HashSet;
 use common::load;
+use std::collections::HashSet;
 
 const NUMBER_OF_STEPS: i64 = 64;
 
 fn main() {
-    println!("Day 21, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 21, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
 
     // Load the map
     let map = load::map().unwrap();
-//    print_map(&map);
+    //    print_map(&map);
     let width = map[0].len();
     let height = map.len();
 
@@ -16,7 +16,7 @@ fn main() {
     let start = find_start(&map).unwrap();
 
     // List of terminals
-    let mut terminals:HashSet<(usize, usize)> = HashSet::new();
+    let mut terminals: HashSet<(usize, usize)> = HashSet::new();
     terminals.insert(start); // Start position is automatically a terminal
 
     // List of non-terminals
@@ -65,22 +65,17 @@ fn main() {
                 }
             }
         }
-//        print_map_with_terminals(&map, &terminals);
+        //        print_map_with_terminals(&map, &terminals);
     }
 
     // Print the result
     println!("Number of terminals: {}", terminals.len());
 }
 
-
 fn find_start(map: &Vec<Vec<char>>) -> Option<(usize, usize)> {
     map.iter().enumerate().find_map(|(y, row)| {
-        row.iter().enumerate().find_map(|(x, &cell)| {
-            if cell == 'S' {
-                Some((x, y))
-            } else {
-                None
-            }
-        })
+        row.iter()
+            .enumerate()
+            .find_map(|(x, &cell)| if cell == 'S' { Some((x, y)) } else { None })
     })
 }

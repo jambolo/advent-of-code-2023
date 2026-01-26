@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 
 fn main() {
-    println!("Day 3, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 3, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     // Create a 2D array of characters
@@ -17,7 +17,7 @@ fn main() {
     let mut gears: BTreeMap<(usize, usize), Vec<u32>> = BTreeMap::new();
 
     // Scan the grid for part numbers
-    for y in 0 .. grid.len() {
+    for y in 0..grid.len() {
         let mut x = 0;
         while x < grid[y].len() {
             if grid[y][x].is_ascii_digit() {
@@ -34,10 +34,10 @@ fn main() {
         }
     }
 
-    #[cfg(not(feature="part2"))]
+    #[cfg(not(feature = "part2"))]
     println!("Sum: {}", sum);
 
-    #[cfg(feature="part2")]
+    #[cfg(feature = "part2")]
     {
         let mut gear_ratio_sum: u64 = 0;
         for g in gears {
@@ -63,32 +63,32 @@ fn is_gear(ch: char) -> bool {
 // Returns true if the character adjacent to a symbol
 fn is_adjacent_to_symbol(grid: &Vec<Vec<char>>, x: usize, y: usize) -> bool {
     if x > 0 {
-        if is_symbol(grid[y][x-1]) {
+        if is_symbol(grid[y][x - 1]) {
             return true;
         }
-        if y > 0 && is_symbol(grid[y-1][x-1]) {
+        if y > 0 && is_symbol(grid[y - 1][x - 1]) {
             return true;
         }
-        if y < grid.len() - 1 && is_symbol(grid[y+1][x-1]) {
+        if y < grid.len() - 1 && is_symbol(grid[y + 1][x - 1]) {
             return true;
         }
     }
 
-    if y > 0 && is_symbol(grid[y-1][x]) {
+    if y > 0 && is_symbol(grid[y - 1][x]) {
         return true;
     }
-    if y < grid.len() - 1 && is_symbol(grid[y+1][x]) {
+    if y < grid.len() - 1 && is_symbol(grid[y + 1][x]) {
         return true;
     }
 
     if x < grid[y].len() - 1 {
-        if is_symbol(grid[y][x+1]) {
+        if is_symbol(grid[y][x + 1]) {
             return true;
         }
-        if y > 0 && is_symbol(grid[y-1][x+1]) {
+        if y > 0 && is_symbol(grid[y - 1][x + 1]) {
             return true;
         }
-        if y < grid.len() - 1 && is_symbol(grid[y+1][x+1]) {
+        if y < grid.len() - 1 && is_symbol(grid[y + 1][x + 1]) {
             return true;
         }
     }
@@ -99,33 +99,33 @@ fn is_adjacent_to_symbol(grid: &Vec<Vec<char>>, x: usize, y: usize) -> bool {
 // Returns true if the character adjacent to a symbol
 fn find_adjacent_gears(grid: &Vec<Vec<char>>, x: usize, y: usize, gears: &mut BTreeSet<(usize, usize)>) {
     if x > 0 {
-        if is_gear(grid[y][x-1]) {
-            gears.insert((x-1, y));
+        if is_gear(grid[y][x - 1]) {
+            gears.insert((x - 1, y));
         }
-        if y > 0 && is_gear(grid[y-1][x-1]) {
-            gears.insert((x-1, y-1));
+        if y > 0 && is_gear(grid[y - 1][x - 1]) {
+            gears.insert((x - 1, y - 1));
         }
-        if y < grid.len() - 1 && is_gear(grid[y+1][x-1]) {
-            gears.insert((x-1, y+1));
+        if y < grid.len() - 1 && is_gear(grid[y + 1][x - 1]) {
+            gears.insert((x - 1, y + 1));
         }
     }
 
-    if y > 0 && is_gear(grid[y-1][x]) {
-        gears.insert((x, y-1));
+    if y > 0 && is_gear(grid[y - 1][x]) {
+        gears.insert((x, y - 1));
     }
-    if y < grid.len() - 1 && is_gear(grid[y+1][x]) {
-        gears.insert((x, y+1));
+    if y < grid.len() - 1 && is_gear(grid[y + 1][x]) {
+        gears.insert((x, y + 1));
     }
 
     if x < grid[y].len() - 1 {
-        if is_gear(grid[y][x+1]) {
-            gears.insert((x+1, y));
+        if is_gear(grid[y][x + 1]) {
+            gears.insert((x + 1, y));
         }
-        if y > 0 && is_gear(grid[y-1][x+1]) {
-            gears.insert((x+1, y-1));
+        if y > 0 && is_gear(grid[y - 1][x + 1]) {
+            gears.insert((x + 1, y - 1));
         }
-        if y < grid.len() - 1 && is_gear(grid[y+1][x+1]) {
-            gears.insert((x+1, y+1));
+        if y < grid.len() - 1 && is_gear(grid[y + 1][x + 1]) {
+            gears.insert((x + 1, y + 1));
         }
     }
 }

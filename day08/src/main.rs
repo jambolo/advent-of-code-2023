@@ -3,7 +3,7 @@ use regex::Regex;
 use std::collections::HashMap;
 
 fn main() {
-    println!("Day 8, part {}", if cfg!(feature="part2") { "2" } else { "1" });
+    println!("Day 8, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     // Load the path
@@ -50,7 +50,7 @@ fn main() {
             second: 0,
         };
 
-        let mut count:usize = 0;
+        let mut count: usize = 0;
         let mut done = false;
         let mut node_name = &ghost;
         while !done {
@@ -69,8 +69,8 @@ fn main() {
         }
         stats.push(stat);
     }
-    
-    let mut product:i64 = 1;
+
+    let mut product: i64 = 1;
     for stat in stats {
         debug_assert!(stat.second == stat.first * 2);
         debug_assert!(stat.first % 293 == 0);
