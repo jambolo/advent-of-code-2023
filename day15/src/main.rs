@@ -49,7 +49,7 @@ fn main() {
                 let i = hash(&symbol) as usize;
                 boxes[i].retain(|lens| lens.symbol != symbol);
             } else {
-                println!("No match for: {}", s);
+                panic!("No match for: {}", s);
             }
         }
         // Sum the focusing power of lenses in boxes that are not empty

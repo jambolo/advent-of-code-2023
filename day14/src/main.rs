@@ -30,16 +30,8 @@ fn main() {
     } else {
         tip_north(&mut map);
     }
-    print_map(&map);
 
     println!("Load: {}", map_load(&map));
-}
-
-fn print_map(map: &Vec<Vec<char>>) {
-    for row in map {
-        println!("{}", row.iter().collect::<String>());
-    }
-    println!();
 }
 
 fn tip_north(map: &mut Vec<Vec<char>>) {

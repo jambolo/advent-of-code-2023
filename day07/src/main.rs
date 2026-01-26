@@ -97,9 +97,7 @@ fn is_four_of_a_kind(hand: &Vec<char>) -> bool {
     let mut count = 0;
     let mut last = ' ';
     let number_of_jokers = hand.iter().filter(|&x| *x == 'J').count() as i32;
-//    println!("hand ={:?} jokers={}", hand, number_of_jokers);
     for card in hand {
-//        println!("count={} card={} last={}", count, card, last);
         if *card == last {
             count += 1;
         }

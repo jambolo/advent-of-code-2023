@@ -29,8 +29,6 @@ fn main() {
     let lines = load::lines().unwrap();
     let mut modules = load_modules(&lines);
 
-//    println!("Modules: {:?}", modules);
-
     let mut low_count: i64 = 0;
     let mut high_count: i64 = 0;
 
@@ -74,13 +72,11 @@ fn main() {
                     }
                 }
             } else {
-                println!("Module not found: {}", to);
+                panic!("Module not found: {}", to);
             }
         }
     }
 
-    println!("Low count: {}", low_count);
-    println!("High count: {}", high_count);
     println!("Answer: {}", low_count * high_count);
 }
 
@@ -96,7 +92,7 @@ fn load_modules<'a>(lines: &'a Vec<String>) -> HashMap<&'a str, Module<'a>>{
             let destinations = captures.get(3).unwrap().as_str().split(",").map(|s| s.trim()).collect();
             modules.insert(name, Module::new(module_type, destinations));
         } else {
-            println!("Can't parse line: {}", &line);
+            panic!("Can't parse line: {}", &line);
         }
     }
 
@@ -107,7 +103,7 @@ fn load_modules<'a>(lines: &'a Vec<String>) -> HashMap<&'a str, Module<'a>>{
             if modules.get(destination).is_some() {
                 sources_by_destination.entry(destination).or_insert_with(HashMap::new).insert(name, false);
             } else {
-                println!("Destination module not found: {}", destination);
+                panic!("Destination module not found: {}", destination);
             }
         }
     }

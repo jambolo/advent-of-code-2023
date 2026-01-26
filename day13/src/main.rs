@@ -11,8 +11,7 @@ fn main() {
         } else if let Some(row) = find_horizontal_mirror(&m) {
             sum += 100 * row;
         } else {
-            println!("Error: no split found");
-            draw_map(&m);
+            panic!("Error: no split found");
         }
     }
     println!("Sum: {}", sum);
@@ -37,11 +36,6 @@ fn load_maps(lines: &[String]) -> Vec<Vec<Vec<char>>> {
     maps
 }
 
-fn draw_map(m: &Vec<Vec<char>>) {
-    for row in m {
-        println!("{}", row.iter().collect::<String>());
-    }
-}
 fn find_vertical_mirror(m: &Vec<Vec<char>>) -> Option<i32> {
     let num_columns = m[0].len();
     for i in 1..num_columns {

@@ -43,7 +43,6 @@ fn number_of_expansions_between(vec: &Vec<usize>, a: usize, b: usize) -> i64 {
     let end = match vec.binary_search(&b) {
         Ok(pos) | Err(pos) => pos,
     };
-//    println!("vec: {:?}, a: {}, b: {} => start: {}, end: {}", vec, a, b, start, end);
     (end - start) as i64
 }
 
@@ -57,12 +56,6 @@ fn find_stars(galaxy: &Vec<String>) -> Vec<(usize, usize)> {
         }
     }
     stars
-}
-fn _draw_galaxy(galaxy: &Vec<String>) {
-    for line in galaxy {
-        println!("{}", line);
-    }
-    println!("")
 }
 
 // Expands the galaxy

@@ -6,38 +6,23 @@ fn main() {
     // Load the map
     let lines = load::lines().unwrap();
     let mut bricks = parse_bricks(&lines);
-    //println!("{} Bricks: {:?}", bricks.len(), bricks);
-    //check_bricks_sanity(&bricks);
 
     // Sort the bricks by z
     bricks.sort_by(|a, b| a.0.2.cmp(&b.0.2));
-    //println!("Sorted bricks: {:?}", bricks);
     let extents = find_extents(&bricks);
-    //println!("Extents: {:?}", extents);
-    //check_bricks_sanity(&bricks);
-    //check_sorted_sanity(&bricks);
 
     // Let the bricks fall and sort again afterwards
     drop(&mut bricks, extents);
     bricks.sort_by(|a, b| a.0.2.cmp(&b.0.2));
-    //println!("Bricks after drop: {:?}", bricks);
-    //let extents_after_drop = find_extents(&bricks);
-    //println!("Extents after drop: {:?}", extents_after_drop);
-    //check_bricks_sanity(&bricks);
-    //check_sorted_sanity(&bricks);
-    //check_dropped_sanity(&bricks);
 
     // For each brick, find which bricks it supports
     let brick_supports:Vec<Vec<usize>> = supports(&bricks);
-    //println!("Brick supports: {:?}", brick_supports);
 
     // For each brick, find the bricks it is supported by
     let brick_supported_by:Vec<Vec<usize>> = supported_by(&brick_supports);
-    //println!("Brick supported by: {:?}", brick_supported_by);
 
     // Find all bricks that are not the only support for any brick
     let disintegratable: Vec<usize> = find_disintegratable_bricks(&brick_supports, &brick_supported_by);
-    //println!("Disintegratable bricks: {:?}", disintegratable);
     println!("Number of disintegratable bricks: {}", disintegratable.len());
 
 }
@@ -141,51 +126,3 @@ fn find_disintegratable_bricks(supports: &Vec<Vec<usize>>, supported_by: &Vec<Ve
     }).collect();
     disintegratable
 }
-
-//fn check_bricks_sanity(bricks: &Vec<((i32, i32, i32), (i32, i32, i32))>) {
-//    for (i, brick) in bricks.iter().enumerate() {
-//        let dx = brick.1.0 - brick.0.0;
-//        let dy = brick.1.1 - brick.0.1;
-//        let dz = brick.1.2 - brick.0.2;
-//        if dx < 0 || dy < 0 || dz < 0 {
-//            panic!("Brick {} min > max: {:?}", i, brick);
-//        }
-//        let d = dx + dy + dz;
-//        if d != dx && d != dy && d != dz {
-//            panic!("Brick {} has 2 dimensions: {:?}", i, brick);
-//        }
-//    }
-//}
-//fn check_sorted_sanity(bricks: &Vec<((i32, i32, i32), (i32, i32, i32))>) {
-//    let mut z = 0;
-//    for (i, brick) in bricks.iter().enumerate() {
-//        if brick.0.2 < z {
-//            panic!("Brick {} is not sorted by z: {:?}", i, brick);
-//        }
-//        z = brick.0.2;
-//    }
-//}
-//
-//fn check_dropped_sanity(bricks: &Vec<((i32, i32, i32), (i32, i32, i32))>) {
-//    // Make sure that no bricks intersect
-//    for (i, brick_i) in bricks.iter().enumerate() {
-//        for (j, brick_j) in bricks.iter().enumerate().skip(i + 1) {
-//            if overlaps_xyz(brick_i, brick_j) {
-//                panic!("Bricks {} and {} overlap: {:?} {:?}", i, j, brick_i, brick_j);
-//            }
-//        }
-//    }
-//    // Make sure no bricks are floating
-//    for (i, brick) in bricks.iter().enumerate() {
-//        if brick.0.2 > 1 {
-//            let required_support = ((brick.0.0, brick.0.1, brick.0.2 - 1), (brick.1.0, brick.1.1, brick.0.2 - 1));
-//            if !bricks.iter().take(i).any(|b| overlaps_xyz(&required_support, b)) {
-//                panic!("Brick {} is floating: {:?}", i, brick);
-//            }
-//        }
-//    }
-//}
-//
-//fn overlaps_xyz(brick_i: &((i32, i32, i32), (i32, i32, i32)), brick_j: &((i32, i32, i32), (i32, i32, i32))) -> bool {
-//    !(brick_i.1.0 < brick_j.0.0 || brick_i.0.0 > brick_j.1.0 || brick_i.1.1 < brick_j.0.1 || brick_i.0.1 > brick_j.1.1 || brick_i.1.2 < brick_j.0.2 || brick_i.0.2 > brick_j.1.2)
-//}

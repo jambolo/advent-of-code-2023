@@ -10,8 +10,6 @@ fn main() {
         grid.push(row);
     }
 
-//    draw_grid(&grid);
-
     let mut occupied: Vec<Vec<bool>> = vec![vec![false; grid[0].len()]; grid.len()];
 
     // Mark the starting point as occupied
@@ -30,51 +28,20 @@ fn main() {
     // Clear all unoccupied points
     clear_unoccupied_points(&mut grid, &occupied);
 
-//    draw_grid(&grid);
-
     // For each unoccupied point, find the number of times a ray in the direction (-1, -1) crosses a pipe wall
     let mut number_of_inside_points = 0;
     for y in 0..grid.len() {
         for x in 0..grid[y].len() {
             if !occupied[y][x] {
                 if count_crossings(x, y, &grid) % 2 == 1 {
-//                    println!("inside: ({}, {})", x, y);
                     number_of_inside_points += 1;
                 }
             }
         }
     }
 
-//    draw_annotated_grid(&grid, &occupied);
-
     println!("number of inside points: {}", number_of_inside_points);
 }
-
-/* 
-fn draw_grid(grid: &Vec<Vec<char>>) {
-    for y in 0..grid.len() {
-        for x in 0..grid[y].len() {
-            print!("{}", grid[y][x]);
-        }
-        println!("");
-    }
-    println!("");
-}
-
-fn draw_annotated_grid(grid: &Vec<Vec<char>>, occupied: &Vec<Vec<bool>>) {
-    for y in 0..grid.len() {
-        for x in 0..grid[y].len() {
-            if !occupied[y][x] {
-                print!("{}", if count_crossings(x, y, &grid) % 2 == 1 { 'I' } else { 'O' });
-            } else {
-                print!("{}", grid[y][x]);
-            }
-        }
-        println!("");
-    }
-    println!("");
-}
-*/
 
 fn clear_unoccupied_points(grid: &mut Vec<Vec<char>>, occupied: &Vec<Vec<bool>>) {
     // Set all unoccupied points to '.'

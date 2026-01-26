@@ -12,7 +12,7 @@ fn main() {
         let space = size - (groups.iter().sum::<i32>() as usize + groups.len() - 1);
         let mut cache: HashMap<(usize, usize, usize), i64> = HashMap::new();
         let count = number_of_permutations(&mut cache, size, template, mask, 0, 0, &groups, space);
-        println!("{}: {} {:b} {:b} {:?} {}", line, size, template, mask, groups, count);
+        ("{}: {} {:b} {:b} {:?} {}", line, size, template, mask, groups, count);
         sum += count;
     }
 

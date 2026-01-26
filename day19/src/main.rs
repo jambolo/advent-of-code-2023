@@ -36,8 +36,6 @@ fn main() {
         i += 1;
     }
 
- //   println!("Workflows: {:?}", workflows);
-
     // Parse the remaining lines as part descriptions
     let mut parts = Vec::new();
     i += 1;
@@ -45,8 +43,6 @@ fn main() {
         parts.push(parse_part(&lines[i]));
         i += 1;
     }
-
-//    println!("Parts: {:?}", parts);
 
     let mut sum: i64 = 0;
 
@@ -58,11 +54,9 @@ fn main() {
         }
 
         if workflow == "A" {
-            println!("{:?} was accepted", part);
             sum += (part.x + part.m + part.a + part.s) as i64;
         } else {
             debug_assert!(workflow == "R");
-            println!("{:?} was rejected", part);
         }
     }
 

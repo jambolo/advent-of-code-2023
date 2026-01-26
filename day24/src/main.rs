@@ -18,20 +18,13 @@ fn main() {
     // Load the data
     let lines = load::lines().unwrap();
     let stones = parse_stones(&lines);
-//    println!("Stones: {:?}", stones);
 
     // Find all intersections
     let intersection_count = stones.iter().enumerate()
         .flat_map(|(i, stone_i)| {
             stones.iter().skip(i + 1)
                 .filter_map(move |stone_j| {
-                    if let Some(xy) = intersects_xy(stone_i, stone_j) {
-//                        println!("Intersection between {} {:?} and {} {:?} at {:?}", i, stone_i.position, j, stone_j.position, xy);
-                        Some(xy)
-                    } else {
-//                        println!("No Intersection between {} and {}", i, j);
-                        None
-                    }
+                    intersects_xy(stone_i, stone_j)
                 })
         })
         .count();

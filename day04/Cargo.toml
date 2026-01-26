@@ -1,5 +1,5 @@
 [package]
-name = "day4"
+name = "day04"
 edition = "2021"
 version.workspace = true
 authors.workspace = true

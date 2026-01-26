@@ -85,7 +85,6 @@ fn main() {
         if last_name.is_some() {
             last_digit = last_value(last_number, last_name.unwrap());
         } 
-//        println!("{} {} {} {}", first_digit, last_digit, first_digit * 10 + last_digit, line);
         sum += first_digit * 10 + last_digit;
     }
 

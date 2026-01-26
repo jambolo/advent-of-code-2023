@@ -7,12 +7,6 @@ fn main() {
     // Load the data
     let lines = load::lines().unwrap();
     let mut graph = parse_graph(&lines);
-    println!("Graph: {:?} entries", graph.len());
-
-    // Create a mapping from node pairs to their edge id
-    let (edge_map, edge_id_map) = create_edge_maps(&graph);
-    println!("Edge map: {:?} entries", edge_map.len());
-    println!("Edge id map: {:?} entries", edge_id_map.len());
 
     // Ideally, you would find the three edges that when removed would split the graph into two disjoint graphs.
     // However, the cost of finding the three edges is too high, so we try a different approach. Since the farthest
@@ -24,14 +18,11 @@ fn main() {
     // it correct in theory.
     
     let node0 = *graph.keys().next().unwrap();
-    let mut pass = 1;
     while !any_node_unreachable_from(&graph, node0) {
-        println!("Pass {}", pass);
         let longest_path: Vec<usize> = find_path_from_farthest_node(&graph, node0);
         for w in longest_path.windows(2) {
             remove_edge(&mut graph, &(w[0], w[1]));
         }
-        pass += 1;
     }
     let a = count_reachable_nodes(&graph, node0);
     let b = graph.len() - a;
@@ -55,8 +46,6 @@ fn parse_graph(lines: &Vec<String>) -> HashMap<usize, Vec<usize>> {
         }
     }
 
-    println!("Node name map: {:?} entries", node_name_map.len());
-
     // For each key, sort the neighbors and remove duplicates
     for neighbors in graph.values_mut() {
         neighbors.sort_unstable();
@@ -78,23 +67,6 @@ fn register_node<'a>(
         node_id_map.insert(name, id);
         id
     }
-}
-
-fn create_edge_maps(graph: &HashMap<usize, Vec<usize>>) -> (Vec<(usize, usize)>, HashMap<(usize, usize), usize>) {
-    let mut edge_map = Vec::new();
-    let mut edge_id_map = HashMap::new();
-    for (&node, neighbors) in graph {
-        for &neighbor in neighbors {
-            if !edge_id_map.contains_key(&(node, neighbor)) {
-                let edge_id = edge_map.len();
-                edge_map.push((node, neighbor));
-                // Note: The edge is stored twice, once for each direction
-                edge_id_map.insert((node, neighbor), edge_id);
-                edge_id_map.insert((neighbor, node), edge_id);
-            }
-        }
-    }
-    (edge_map, edge_id_map)
 }
 
 /// Returns the path from the farthest node back to the start node.

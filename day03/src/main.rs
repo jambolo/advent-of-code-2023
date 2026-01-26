@@ -34,17 +34,20 @@ fn main() {
         }
     }
 
+    #[cfg(not(feature="part2"))]
     println!("Sum: {}", sum);
 
-    let mut gear_ratio_sum: u64 = 0;
-    for g in gears {
-        println!("Gears at ({}, {}): {:?}", g.0.0, g.0.1, g.1);
-        if g.1.len() == 2 {
-            gear_ratio_sum += g.1[0] as u64 * g.1[1] as u64;
+    #[cfg(feature="part2")]
+    {
+        let mut gear_ratio_sum: u64 = 0;
+        for g in gears {
+            if g.1.len() == 2 {
+                gear_ratio_sum += g.1[0] as u64 * g.1[1] as u64;
+            }
         }
-    }
 
-    println!("Gear ratio sum: {}", gear_ratio_sum);
+        println!("Gear ratio sum: {}", gear_ratio_sum);
+    }
 }
 
 // Returns true if the character is a symbol

@@ -64,7 +64,6 @@ fn shortest(start: (usize, usize),
         }
         if current.f - current.g < lowest_h {
             lowest_h = current.f - current.g;
-            println!("Lowest h: {}", lowest_h);
         }
 
         let neighbors: Vec<Node> = get_neighbors(&current, &map);

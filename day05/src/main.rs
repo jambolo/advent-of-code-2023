@@ -8,18 +8,12 @@ fn main() {
     // Load the seeds
     let seeds = parse_seeds(&mut iter);
 
-    // println!("Seeds: {:?}", seeds);
-
     // Load each map
     let mut maps: Vec<Vec<(i64, i64, i64)>> = Vec::new();
     while let Some(_line) = iter.next() {
         // Ignore name of map
         maps.push(parse_map(&mut iter));
     }
-
-    // for m in &maps {
-    //     println!("{:?}", m);
-    // }
 
     let mut map = create_map_from_seeds(&seeds);
     for m in &maps {

@@ -4,8 +4,11 @@ fn main() {
     println!("Day 9, part {}", if cfg!(feature="part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
+    #[cfg(not(feature = "part2"))]
     let mut nsum: i64 = 0;
+    #[cfg(feature = "part2")]
     let mut psum: i64 = 0;
+
     for line in lines {
         let numbers: Vec<i64> = line.split_ascii_whitespace()
                                     .map(|s| s.parse().unwrap())
@@ -15,24 +18,31 @@ fn main() {
         let mut starts: Vec<i64> = Vec::new();
         let mut sequence = numbers.clone();
         while !all_zeros(&sequence) {
-            println!("{:?}", sequence);
             starts.push(sequence[0]);
             ends.push(*sequence.last().unwrap());
             sequence = next_sequence(&sequence);
         }
-        let n: i64 = ends.iter().sum();
-        println!("n: {}", n);
-        nsum += n;
 
-        let mut p: i64 = 0;
-        for s in starts.iter().rev() {
-            p = s - p;
+        #[cfg(not(feature = "part2"))]
+        {
+            let n: i64 = ends.iter().sum();
+            nsum += n;
         }
-        println!("p: {} {:?}", p, starts);
-        psum += p;
+
+        #[cfg(feature = "part2")]
+        {
+            let mut p: i64 = 0;
+            for s in starts.iter().rev() {
+                p = s - p;
+            }
+            psum += p;
+        }
     }
 
+    #[cfg(not(feature = "part2"))]
     println!("nsum: {}", nsum);
+
+    #[cfg(feature = "part2")]
     println!("psum: {}", psum);
 }
 

@@ -23,17 +23,14 @@ fn main() {
             };
             steps.push(step);
         } else {
-            println!("No match for: {}", line);
+            panic!("No match for: {}", line);
         }
     }
-//    println!("Steps: {:?}", steps);
 
     let extents = compute_extents(&steps);
-    println!("Extents: {:?}", extents);
     let width = (extents.0).1 - (extents.0).0 + 1;
     let height = (extents.1).1 - (extents.1).0 + 1;
     let start: (usize, usize) = ((-(extents.0).0).try_into().unwrap(), (-(extents.1).0).try_into().unwrap());
-    println!("Width: {}, Height: {}, Start: {:?}", width, height, start);
 
     let mut map = create_map(width as usize, height as usize, start, &steps);
 
@@ -90,16 +87,6 @@ fn create_map(width: usize, height: usize, start: (usize, usize), steps: &Vec<St
 
     map
 }
-
-// fn print_map(map: &Vec<Vec<char>>) {
-//     for row in map {
-//         for cell in row {
-//             print!("{}", cell);
-//         }
-//         println!();
-//     }
-//     println!();
-// }
 
 fn find_interior_point(map: &Vec<Vec<char>>) -> (usize, usize) {
     // We are guaranteed to find an interior point on the second row because a horizontal boundary must exist on the
