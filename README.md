@@ -10,13 +10,13 @@ Results: Part 1: 54518, Part 2: 54518
 
 ## Day 2
 
-Copilot is turning out to be relatively useful. It is pretty good at doing the boilerplate code and copy pasta. The boilerplate code is especially helpful while Rust is new to me. I don't have to worry about all of the minute details.
+Copilot is turning out to be relatively useful. It is pretty good at doing the boilerplate code and copy pasta. The boilerplate code is  especially helpful while Rust is new to me. I don't have to worry about all of the minute details.
 
 Results: Part 1: 2593, Part 2: 54699
 
 ## Day 3
 
-Collections in Rust are pretty straightforward. Objects are still a bit of a mystery.
+Collections in Rust are pretty straightforward. Objects are still a bit of a mystery. 
 
 Results: Part 1: 82818007, Part 2: 82818007
 
@@ -48,7 +48,7 @@ Results: Part 1: 249138943, Part 2: 249138943
 
 Again pretty trivial, but part 2 involved some manual work in order to discover the cycles and determine their lengths, and then to deal with fact that they are not prime.
 
-As for Rust, HashMap is convenient, but unlike C/C++, `String` is not `str` and not `Vec<char>`.
+As for Rust, HashMap is convenient, but unlike C/C++, `String` is not `str` and not `Vec<char>`. 
 
 Also, a function returning a reference requires specifying the lifetime of the reference, and it is not clear that you can't specify the wrong lifetime. For example, I returned a reference to a string in an element of a HashMap and specified (I believe) that the reference's lifetime is the same as the HashMap, but that is not correct, is it? Does the lifetime of a HashMap end when an element is removed from it, or does my specification ensure that the reference String is not destroyed until the HashMap is destroyed?
 
@@ -88,7 +88,7 @@ I had to move to 128-bit integers, but as I expected, the brute force approach d
 
 ## Day 13
 
-Easy again. I am learning about the features of Rust by asking Copilot to improve my code. `if let ...` is interesting. `if let Some(x) = ...` is especially handy.
+Easy again. I am learning about the features of Rust by asking Copilot to improve my code. `if let ...` is interesting. `if let Some(x) = ... ` is especially handy.
 
 Results: Part 1: 34202, Part 2: 34230
 
@@ -126,13 +126,9 @@ Implementing a simple A* turned out to be a challenge because in a typical imple
 
 In general, while A* is the optimal general pathfinding solution, it has implementation issues.
 
-1. Elements in the priority queue must be removed, replaced or changed. That operation is generally not supported by priority queues, which generally assume that entries are immutable and inaccessible until they reach the front of the queue.
+It turns out that there is a way to avoid manipulating the contents of the priority queue. So, not a problem.
 
-2. Node states are updated, making optimizations such as caching and parallelization perilous. This is where an implementation in Rust encounters difficulties.
-
-I'm going to have to rethink this solution. Part 1 is too slow. Part 2 is never going to work.
-
-Results: Part 1: 847
+Results: Part 1: 847, Part 2: 997
 
 ## Day 18
 
