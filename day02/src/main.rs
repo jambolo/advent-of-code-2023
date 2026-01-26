@@ -2,6 +2,7 @@ use common::load;
 use regex::Regex;
 
 // which games would have been possible if the bag contained only 12 red cubes, 13 green cubes, and 14 blue cubes?
+#[cfg(not(feature = "part2"))]
 const MAX: (i32, i32, i32) = (12, 13, 14);
 
 fn main() {
@@ -71,8 +72,6 @@ fn part2(games: &[String]) {
         let mut max_blue: Option<i32> = None;
 
         // Parse a game
-        let game_regex = Regex::new(r"Game (\d+):").unwrap();
-        let game_id: i32 = game_regex.captures(game).unwrap()[1].parse().unwrap();
         let tuple_regex = Regex::new(r"(\d+) (\w+)([,;]?)").unwrap();
         for cap in tuple_regex.captures_iter(&game) {
             let number: i32 = cap[1].parse().unwrap();

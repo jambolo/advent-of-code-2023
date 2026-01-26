@@ -134,7 +134,9 @@ Results: Part 1: 847, Part 2: 997
 
 Part 1 is pretty straight-forward. Finding a good point-in-poly algorithm proved difficult, though I was able to get away with an adhoc implementation for this problem because I only needed *any* interior point for the flood-fill.
 
-Results: Part 1: 40131
+For part 2, I felt that there had to be a simple algorithm for computing the area of this kind of shape, and I was happy to find a simplified variation of the Shoelace Formula, which itself is a simplified variation of Green’s Theorem, plus a simple way to calculate the area of a thick perimeter. This solution makes my flood-fill solution for part 1 ridiculous.
+
+Results: Part 1: 40131, Part 2: 104454050898331
 
 ## Day 19
 

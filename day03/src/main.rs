@@ -1,4 +1,5 @@
 use common::load;
+    #[cfg(feature = "part2")]
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 
@@ -13,7 +14,9 @@ fn main() {
         grid.push(s.chars().collect());
     }
 
+    #[cfg(not(feature = "part2"))]
     let mut sum = 0;
+    #[cfg(feature = "part2")]
     let mut gears: BTreeMap<(usize, usize), Vec<u32>> = BTreeMap::new();
 
     // Scan the grid for part numbers
@@ -21,9 +24,16 @@ fn main() {
         let mut x = 0;
         while x < grid[y].len() {
             if grid[y][x].is_ascii_digit() {
-                let (new_x, value, is_part_number, adjacent_gears) = scan_number(&grid, x, y);
+                #[cfg(not(feature = "part2"))]
+                let (new_x, value, is_part_number, _) = scan_number(&grid, x, y);
+                #[cfg(not(feature = "part2"))]
                 if is_part_number {
                     sum += value;
+                }
+                #[cfg(feature = "part2")]
+                let (new_x, value, is_part_number, adjacent_gears) = scan_number(&grid, x, y);
+                #[cfg(feature = "part2")]
+                if is_part_number {
                     for g in adjacent_gears {
                         gears.entry(g).or_insert(Vec::new()).push(value);
                     }
