@@ -2,7 +2,6 @@ use common::load;
 use regex::Regex;
 
 // which games would have been possible if the bag contained only 12 red cubes, 13 green cubes, and 14 blue cubes?
-#[cfg(not(feature = "part2"))]
 const MAX: (i32, i32, i32) = (12, 13, 14);
 
 fn main() {
@@ -10,15 +9,15 @@ fn main() {
 
     let games = load::lines().unwrap();
 
-    #[cfg(not(feature = "part2"))]
-    part1(&games);
-    #[cfg(feature = "part2")]
-    part2(&games);
+    let result = if cfg!(feature = "part2") { part2(&games) } else { part1(&games) };
+    println!("Result: {}", result);
 }
 
-#[cfg(not(feature = "part2"))]
-fn part1(games: &[String]) {
+fn part1(games: &[String]) -> i32 {
     let mut id_sum = 0;
+
+    let game_regex = Regex::new(r"Game (\d+):").unwrap();
+    let tuple_regex = Regex::new(r"(\d+) (\w+)([,;]?)").unwrap();
 
     // Check games
     for game in games {
@@ -28,10 +27,8 @@ fn part1(games: &[String]) {
         let mut failed = false;
 
         // Parse a game
-        let game_regex = Regex::new(r"Game (\d+):").unwrap();
         let game_id: i32 = game_regex.captures(game).unwrap()[1].parse().unwrap();
-        let tuple_regex = Regex::new(r"(\d+) (\w+)([,;]?)").unwrap();
-        for cap in tuple_regex.captures_iter(&game) {
+        for cap in tuple_regex.captures_iter(game) {
             let number: i32 = cap[1].parse().unwrap();
             let color: &str = &cap[2];
             let separator: &str = &cap[3];
@@ -55,12 +52,12 @@ fn part1(games: &[String]) {
         }
     }
 
-    println!("Result: {}", id_sum);
+    id_sum
 }
 
-#[cfg(feature = "part2")]
-fn part2(games: &[String]) {
+fn part2(games: &[String]) -> i32 {
     let mut sum_of_powers = 0;
+    let tuple_regex = Regex::new(r"(\d+) (\w+)([,;]?)").unwrap();
 
     // Check games
     for game in games {
@@ -72,8 +69,7 @@ fn part2(games: &[String]) {
         let mut max_blue: Option<i32> = None;
 
         // Parse a game
-        let tuple_regex = Regex::new(r"(\d+) (\w+)([,;]?)").unwrap();
-        for cap in tuple_regex.captures_iter(&game) {
+        for cap in tuple_regex.captures_iter(game) {
             let number: i32 = cap[1].parse().unwrap();
             let color: &str = &cap[2];
             let separator: &str = &cap[3];
@@ -106,5 +102,5 @@ fn part2(games: &[String]) {
         }
     }
 
-    println!("Result: {}", sum_of_powers);
+    sum_of_powers
 }

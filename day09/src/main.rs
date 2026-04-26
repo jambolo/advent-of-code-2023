@@ -44,7 +44,7 @@ fn main() {
     println!("Result: {}", psum);
 }
 
-fn all_zeros(sequence: &Vec<i64>) -> bool {
+fn all_zeros(sequence: &[i64]) -> bool {
     for i in sequence {
         if *i != 0 {
             return false;
@@ -53,7 +53,7 @@ fn all_zeros(sequence: &Vec<i64>) -> bool {
     true
 }
 
-fn next_sequence(sequence: &Vec<i64>) -> Vec<i64> {
+fn next_sequence(sequence: &[i64]) -> Vec<i64> {
     let mut new_sequence = Vec::new();
     for i in 1..sequence.len() {
         new_sequence.push(sequence[i] - sequence[i - 1]);

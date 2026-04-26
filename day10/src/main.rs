@@ -1,5 +1,8 @@
 use common::load;
 
+type Point = (usize, usize);
+type Direction = (isize, isize);
+
 fn main() {
     println!("=== Day 10, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
@@ -10,51 +13,62 @@ fn main() {
         grid.push(row);
     }
 
-    let mut occupied: Vec<Vec<bool>> = vec![vec![false; grid[0].len()]; grid.len()];
-
-    // Mark the starting point as occupied
     let starting_point = find_start(&grid);
     let points = find_exits(starting_point, &grid);
     grid[starting_point.1][starting_point.0] = type_from_exits(&points);
 
-    // Follow the path until the start is reached again, marking each point as occupied
+    let result = if cfg!(feature = "part2") {
+        part2(&mut grid, starting_point, &points)
+    } else {
+        part1(&grid, starting_point, &points)
+    };
+
+    println!("Result: {}", result);
+}
+
+fn part1(grid: &[Vec<char>], starting_point: Point, points: &[(Point, Direction)]) -> i32 {
+    let mut steps = 0;
+    let mut p = points[0];
+    while p.0 != starting_point {
+        steps += 1;
+        p = next_point(p, grid);
+    }
+    (steps + 1) / 2
+}
+
+fn part2(grid: &mut [Vec<char>], starting_point: Point, points: &[(Point, Direction)]) -> i32 {
+    let mut occupied: Vec<Vec<bool>> = vec![vec![false; grid[0].len()]; grid.len()];
+
     occupied[starting_point.1][starting_point.0] = true;
-    let mut p = points[0].clone();
-    while p.0 .0 != starting_point.0 || p.0 .1 != starting_point.1 {
+    let mut p = points[0];
+    while p.0 != starting_point {
         occupied[p.0 .1][p.0 .0] = true;
-        p = next_point(p, &grid);
+        p = next_point(p, grid);
     }
 
-    // Clear all unoccupied points
-    clear_unoccupied_points(&mut grid, &occupied);
+    clear_unoccupied_points(grid, &occupied);
 
-    // For each unoccupied point, find the number of times a ray in the direction (-1, -1) crosses a pipe wall
-    let mut number_of_inside_points = 0;
-    for y in 0..grid.len() {
-        for x in 0..grid[y].len() {
-            if !occupied[y][x] {
-                if count_crossings(x, y, &grid) % 2 == 1 {
-                    number_of_inside_points += 1;
-                }
-            }
-        }
-    }
+    let number_of_inside_points = occupied
+        .iter()
+        .enumerate()
+        .flat_map(|(y, row)| row
+            .iter()
+            .enumerate()
+            .map(move |(x, &occupied_here)| (x, y, occupied_here)))
+        .filter(|(x, y, occupied_here)| !occupied_here && count_crossings(*x, *y, grid) % 2 == 1)
+        .count();
 
-    println!("Result: {}", number_of_inside_points);
+    number_of_inside_points as i32
 }
 
-fn clear_unoccupied_points(grid: &mut Vec<Vec<char>>, occupied: &Vec<Vec<bool>>) {
+fn clear_unoccupied_points(grid: &mut [Vec<char>], occupied: &[Vec<bool>]) {
     // Set all unoccupied points to '.'
-    for y in 0..grid.len() {
-        for x in 0..grid[y].len() {
-            if !occupied[y][x] {
-                grid[y][x] = '.';
-            }
-        }
-    }
+    (0..occupied.len()).flat_map(|y| (0..occupied[y].len()).map(move |x| (x, y)))
+        .filter(|(x, y)| !occupied[*y][*x])
+        .for_each(|(x, y)| grid[y][x] = '.');
 }
 
-fn type_from_exits(exits: &Vec<((usize, usize), (isize, isize))>) -> char {
+fn type_from_exits(exits: &[(Point, Direction)]) -> char {
     let d0 = exits[0].1;
     let d1 = exits[1].1;
     if d0.1 == -1 && d1.0 == 1 || d1.1 == -1 && d0.0 == 1 {
@@ -78,56 +92,47 @@ fn type_from_exits(exits: &Vec<((usize, usize), (isize, isize))>) -> char {
     panic!("Unknown type");
 }
 
-fn count_crossings(x0: usize, y0: usize, grid: &Vec<Vec<char>>) -> i32 {
-    let mut number_of_crossings = 0;
-    let mut x = x0;
-    let mut y = y0;
-    while x > 0 && y > 0 {
-        x -= 1;
-        y -= 1;
-        let g = grid[y][x];
-        if g == '|' || g == '-' || g == 'F' || g == 'J' {
-            number_of_crossings += 1;
-        }
-    }
-    number_of_crossings
+fn count_crossings(x0: usize, y0: usize, grid: &[Vec<char>]) -> i32 {
+    (1..=x0.min(y0))
+        .filter(|i| matches!(grid[y0 - i][x0 - i], '|' | '-' | 'F' | 'J'))
+        .count() as i32
 }
 
-fn next_point(p: ((usize, usize), (isize, isize)), grid: &Vec<Vec<char>>) -> ((usize, usize), (isize, isize)) {
+fn next_point(p: (Point, Direction), grid: &[Vec<char>]) -> (Point, Direction) {
     let d = direction(p.1, grid[p.0 .1][p.0 .0]);
     let n = advance(p.0, d);
     (n, d)
 }
 
-fn find_exits(point: (usize, usize), grid: &Vec<Vec<char>>) -> Vec<((usize, usize), (isize, isize))> {
-    let mut exits: Vec<((usize, usize), (isize, isize))> = Vec::new();
+fn find_exits(point: Point, grid: &[Vec<char>]) -> Vec<(Point, Direction)> {
+    let mut exits: Vec<(Point, Direction)> = Vec::new();
     if point.1 > 0 {
-        let d: (isize, isize) = (0, -1);
-        let n: (usize, usize) = advance(point, d);
+        let d: Direction = (0, -1);
+        let n: Point = advance(point, d);
         let g = grid[n.1][n.0];
         if g == '|' || g == 'F' || g == '7' {
             exits.push((n, d));
         }
     }
     if point.0 < grid[point.1].len() - 1 {
-        let d: (isize, isize) = (1, 0);
-        let n: (usize, usize) = advance(point, d);
+        let d: Direction = (1, 0);
+        let n: Point = advance(point, d);
         let g = grid[n.1][n.0];
         if g == '-' || g == 'J' || g == '7' {
             exits.push((n, d));
         }
     }
     if point.1 < grid.len() - 1 {
-        let d: (isize, isize) = (0, 1);
-        let n: (usize, usize) = advance(point, d);
+        let d: Direction = (0, 1);
+        let n: Point = advance(point, d);
         let g = grid[n.1][n.0];
         if g == '|' || g == 'J' || g == 'L' {
             exits.push((n, d));
         }
     }
     if point.0 > 0 {
-        let d: (isize, isize) = (-1, 0);
-        let n: (usize, usize) = advance(point, d);
+        let d: Direction = (-1, 0);
+        let n: Point = advance(point, d);
         let g = grid[n.1][n.0];
         if g == '-' || g == 'L' || g == 'F' {
             exits.push((n, d));
@@ -136,13 +141,13 @@ fn find_exits(point: (usize, usize), grid: &Vec<Vec<char>>) -> Vec<((usize, usiz
     exits
 }
 
-fn advance(p: (usize, usize), d: (isize, isize)) -> (usize, usize) {
-    let n: (usize, usize) = ((p.0 as isize + d.0) as usize, (p.1 as isize + d.1) as usize);
+fn advance(p: Point, d: Direction) -> Point {
+    let n: Point = ((p.0 as isize + d.0) as usize, (p.1 as isize + d.1) as usize);
     n
 }
 
 // Returns the direction specified by the character.
-fn direction(d: (isize, isize), c: char) -> (isize, isize) {
+fn direction(d: Direction, c: char) -> Direction {
     match c {
         '-' => {
             if d.0 == 1 {
@@ -191,13 +196,13 @@ fn direction(d: (isize, isize), c: char) -> (isize, isize) {
 }
 
 // Returns the starting point of the grid
-fn find_start(grid: &Vec<Vec<char>>) -> (usize, usize) {
-    for y in 0..grid.len() {
-        for x in 0..grid[y].len() {
-            if grid[y][x] == 'S' {
-                return (x, y);
-            }
-        }
-    }
-    panic!("No starting point found");
+fn find_start(grid: &[Vec<char>]) -> Point {
+    grid.iter()
+        .enumerate()
+        .find_map(|(y, row)| {
+            row.iter()
+                .position(|&c| c == 'S')
+                .map(|x| (x, y))
+        })
+        .expect("No starting point found")
 }

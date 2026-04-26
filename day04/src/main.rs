@@ -9,34 +9,52 @@ fn main() {
 
     for line in lines {
         let parts: Vec<&str> = line.split(":").collect();
-        let _id: i32 = parts[0].trim().split_whitespace().last().unwrap().parse().unwrap();
+        let _id: i32 = parts[0].split_whitespace().last().unwrap().parse().unwrap();
 
         let sets: Vec<&str> = parts[1].split("|").collect();
-        let mut winning: Vec<i32> = sets[0].trim().split_whitespace().map(|s| s.parse().unwrap()).collect();
-        let mut yours: Vec<i32> = sets[1].trim().split_whitespace().map(|s| s.parse().unwrap()).collect();
+        let mut winning: Vec<i32> = sets[0].split_whitespace().map(|s| s.parse().unwrap()).collect();
+        let mut yours: Vec<i32> = sets[1].split_whitespace().map(|s| s.parse().unwrap()).collect();
 
         winning.sort();
         yours.sort();
         cards.push((1, winning, yours));
     }
 
-    // Find the winning cards and accumulate more cards
+    let result = if cfg!(feature = "part2") { part2(cards) } else { part1(cards) };
+    println!("Result: {}", result);
+}
+
+fn part1(cards: Vec<(i32, Vec<i32>, Vec<i32>)>) -> i32
+{
+    let mut total_points = 0;
+    for card in &cards {
+        let winners = intersection(&card.1, &card.2);
+        if !winners.is_empty() {
+            let matches = winners.len() as u32;
+            let points = 2_i32.pow(matches - 1);
+            total_points += points;
+        }
+    }
+    total_points
+}
+
+fn part2(mut cards: Vec<(i32, Vec<i32>, Vec<i32>)>) -> i32
+{
     let mut count = 0;
     for i in 0..cards.len() {
         count += cards[i].0;
         let winners = intersection(&cards[i].1, &cards[i].2);
-        if winners.len() > 0 {
+        if !winners.is_empty() {
             for j in i + 1..=i + winners.len() {
                 cards[j].0 += cards[i].0;
             }
         }
     }
-
-    println!("Result: {}", count);
+    count
 }
 
 // Returns the intersection of two sorted vectors
-fn intersection(a: &Vec<i32>, b: &Vec<i32>) -> Vec<i32> {
+fn intersection(a: &[i32], b: &[i32]) -> Vec<i32> {
     let mut result = Vec::new();
     let mut i = 0;
     let mut j = 0;

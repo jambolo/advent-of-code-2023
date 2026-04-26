@@ -29,7 +29,7 @@ fn main() {
     println!("Result: {}", a * b);
 }
 
-fn parse_graph(lines: &Vec<String>) -> HashMap<usize, Vec<usize>> {
+fn parse_graph(lines: &[String]) -> HashMap<usize, Vec<usize>> {
     let mut graph = HashMap::new();
     let mut node_name_map = Vec::new();
     let mut node_id_map = HashMap::new();
@@ -39,7 +39,7 @@ fn parse_graph(lines: &Vec<String>) -> HashMap<usize, Vec<usize>> {
         let key_id = register_node(key.trim(), &mut node_id_map, &mut node_name_map);
 
         // Add the neighbors for the key and add key as a neighbor for each neighbor (expecting duplicates)
-        for neighbor in neighbors.trim().split_whitespace() {
+        for neighbor in neighbors.split_whitespace() {
             let neighbor_id = register_node(neighbor, &mut node_id_map, &mut node_name_map);
             graph.entry(key_id).or_insert_with(Vec::new).push(neighbor_id);
             graph.entry(neighbor_id).or_insert_with(Vec::new).push(key_id);

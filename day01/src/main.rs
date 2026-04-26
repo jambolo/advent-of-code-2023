@@ -2,80 +2,6 @@ use common::load;
 
 const DIGIT_NAMES: [&str; 10] = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
 
-// Returns the first digit in a string
-fn first_number_in(s: &str) -> Option<(usize, u32)> {
-    s.char_indices().find_map(|(i, c)| {
-        if c.is_ascii_digit() {
-            Some((i, c.to_digit(10)?))
-        } else {
-            None
-        }
-    })
-}
-
-// Returns the last digit in a string
-fn last_number_in(s: &str) -> Option<(usize, u32)> {
-    s.char_indices().rev().find_map(|(i, c)| {
-        if c.is_ascii_digit() {
-            Some((i, c.to_digit(10)?))
-        } else {
-            None
-        }
-    })
-}
-
-// Returns the first digit by name in a string
-fn first_name_in(s: &str) -> Option<(usize, usize)> {
-    let mut first_value: Option<usize> = None;
-    let mut first_pos: Option<usize> = None;
-    for (value, &digit_name) in DIGIT_NAMES.iter().enumerate() {
-        if let Some(pos) = s.find(digit_name) {
-            if first_pos.is_none() || pos < first_pos.unwrap() {
-                first_pos = Some(pos);
-                first_value = Some(value);
-            }
-        }
-    }
-    if first_pos.is_none() {
-        return None;
-    }
-    return Some((first_pos.unwrap(), first_value.unwrap()));
-}
-
-// Returns the last digit by name in a string
-fn last_name_in(s: &str) -> Option<(usize, usize)> {
-    let mut last_value: Option<usize> = None;
-    let mut last_pos: Option<usize> = None;
-    for (value, &digit_name) in DIGIT_NAMES.iter().enumerate().rev() {
-        if let Some(pos) = s.rfind(digit_name) {
-            if last_pos.is_none() || pos > last_pos.unwrap() {
-                last_pos = Some(pos);
-                last_value = Some(value);
-            }
-        }
-    }
-    if last_pos.is_none() {
-        return None;
-    }
-    return Some((last_pos.unwrap(), last_value.unwrap()));
-}
-
-// Returns the first digit
-fn first_value((a1, a2): (usize, u32), (b1, b2): (usize, usize)) -> u32 {
-    if a1 < b1 {
-        a2
-    } else {
-        b2 as u32
-    }
-}
-// Returns the last digit
-fn last_value((a1, a2): (usize, u32), (b1, b2): (usize, usize)) -> u32 {
-    if a1 > b1 {
-        a2
-    } else {
-        b2 as u32
-    }
-}
 fn main() {
     println!("=== Day 1, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
@@ -101,4 +27,61 @@ fn main() {
     }
 
     println!("Result: {}", sum);
+}
+
+// Returns the first digit in a string
+fn first_number_in(s: &str) -> Option<(usize, u32)> {
+    s.char_indices().find_map(|(i, c)| {
+        if c.is_ascii_digit() {
+            Some((i, c.to_digit(10)?))
+        } else {
+            None
+        }
+    })
+}
+
+// Returns the last digit in a string
+fn last_number_in(s: &str) -> Option<(usize, u32)> {
+    s.char_indices().rev().find_map(|(i, c)| {
+        if c.is_ascii_digit() {
+            Some((i, c.to_digit(10)?))
+        } else {
+            None
+        }
+    })
+}
+
+// Returns the first digit by name in a string
+fn first_name_in(s: &str) -> Option<(usize, usize)> {
+    DIGIT_NAMES
+        .iter()
+        .enumerate()
+        .filter_map(|(value, &digit_name)| s.find(digit_name).map(|pos| (pos, value)))
+        .min_by_key(|(pos, _)| *pos)
+}
+
+// Returns the last digit by name in a string
+fn last_name_in(s: &str) -> Option<(usize, usize)> {
+    DIGIT_NAMES
+        .iter()
+        .enumerate()
+        .filter_map(|(value, &digit_name)| s.rfind(digit_name).map(|pos| (pos, value)))
+        .max_by_key(|(pos, _)| *pos)
+}
+
+// Returns the first digit
+fn first_value((a1, a2): (usize, u32), (b1, b2): (usize, usize)) -> u32 {
+    if a1 < b1 {
+        a2
+    } else {
+        b2 as u32
+    }
+}
+// Returns the last digit
+fn last_value((a1, a2): (usize, u32), (b1, b2): (usize, usize)) -> u32 {
+    if a1 > b1 {
+        a2
+    } else {
+        b2 as u32
+    }
 }

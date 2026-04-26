@@ -20,7 +20,7 @@ impl Node {
         self.edges.insert(to, cost);
     }
     fn find_edge(&self, to: usize) -> Option<i32> {
-        self.edges.get(&to).map(|c| *c)
+        self.edges.get(&to).copied()
     }
 }
 
@@ -52,7 +52,7 @@ fn main() {
     println!("Result: {}", max_cost);
 }
 
-fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut directed: bool, nodes: &mut Vec<Node>) {
+fn follow_path(map: &[Vec<char>], from: usize, mut dir: (i32, i32), mut directed: bool, nodes: &mut Vec<Node>) {
     let from_node = &nodes[from];
     let mut pos = ((from_node.x as i32 + dir.0) as usize, (from_node.y as i32 + dir.1) as usize);
     let mut cost = 1;
@@ -76,15 +76,15 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
         match c {
             '>' => {
                 if cfg!(feature = "part2") {
-                    let directions = next_directions(&map, pos, dir);
-                    if is_node(&map, pos) {
+                    let directions = next_directions(map, pos, dir);
+                    if is_node(map, pos) {
                         // This is a new node
                         let to = add_node(nodes, pos, from, cost, directed);
                         for d in directions {
                             follow_path(map, to, d, false, nodes);
                         }
-                        break; // reachded node so done with this path
-                    } else if directions.len() == 0 {
+                        break; // reached node so done with this path
+                    } else if directions.is_empty() {
                         break; // dead end
                     }
                     debug_assert!(directions.len() == 1);
@@ -94,7 +94,7 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                         break; // blocked
                     } else {
                         next_dir = (1, 0);
-                        if is_node(&map, pos) {
+                        if is_node(map, pos) {
                             // This is a new node
                             let to = add_node(nodes, pos, from, cost, true);
                             follow_path(map, to, next_dir, true, nodes);
@@ -107,15 +107,15 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
             }
             '^' => {
                 if cfg!(feature = "part2") {
-                    let directions = next_directions(&map, pos, dir);
-                    if is_node(&map, pos) {
+                    let directions = next_directions(map, pos, dir);
+                    if is_node(map, pos) {
                         // This is a new node
                         let to = add_node(nodes, pos, from, cost, directed);
                         for d in directions {
                             follow_path(map, to, d, false, nodes);
                         }
                         break; // reachded node so done with this path
-                    } else if directions.len() == 0 {
+                    } else if directions.is_empty() {
                         break; // dead end
                     }
                     debug_assert!(directions.len() == 1);
@@ -125,7 +125,7 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                         break; // blocked
                     } else {
                         next_dir = (0, -1);
-                        if is_node(&map, pos) {
+                        if is_node(map, pos) {
                             // This is a new node
                             let to = add_node(nodes, pos, from, cost, true);
                             follow_path(map, to, next_dir, true, nodes);
@@ -138,15 +138,15 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
             }
             '<' => {
                 if cfg!(feature = "part2") {
-                    let directions = next_directions(&map, pos, dir);
-                    if is_node(&map, pos) {
+                    let directions = next_directions(map, pos, dir);
+                    if is_node(map, pos) {
                         // This is a new node
                         let to = add_node(nodes, pos, from, cost, directed);
                         for d in directions {
                             follow_path(map, to, d, false, nodes);
                         }
                         break; // reachded node so done with this path
-                    } else if directions.len() == 0 {
+                    } else if directions.is_empty() {
                         break; // dead end
                     }
                     debug_assert!(directions.len() == 1);
@@ -156,7 +156,7 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                         break; // blocked
                     } else {
                         next_dir = (-1, 0);
-                        if is_node(&map, pos) {
+                        if is_node(map, pos) {
                             // This is a new node
                             let to = add_node(nodes, pos, from, cost, true);
                             follow_path(map, to, next_dir, true, nodes);
@@ -169,15 +169,15 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
             }
             'v' => {
                 if cfg!(feature = "part2") {
-                    let directions = next_directions(&map, pos, dir);
-                    if is_node(&map, pos) {
+                    let directions = next_directions(map, pos, dir);
+                    if is_node(map, pos) {
                         // This is a new node
                         let to = add_node(nodes, pos, from, cost, directed);
                         for d in directions {
                             follow_path(map, to, d, false, nodes);
                         }
                         break; // reachded node so done with this path
-                    } else if directions.len() == 0 {
+                    } else if directions.is_empty() {
                         break; // dead end
                     }
                     debug_assert!(directions.len() == 1);
@@ -187,7 +187,7 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                         break; // blocked
                     } else {
                         next_dir = (0, 1);
-                        if is_node(&map, pos) {
+                        if is_node(map, pos) {
                             // This is a new node
                             let to = add_node(nodes, pos, from, cost, true);
                             follow_path(map, to, next_dir, true, nodes);
@@ -199,15 +199,15 @@ fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut direc
                 }
             }
             '.' => {
-                let directions = next_directions(&map, pos, dir);
-                if is_node(&map, pos) {
+                let directions = next_directions(map, pos, dir);
+                if is_node(map, pos) {
                     // This is a new node
                     let to = add_node(nodes, pos, from, cost, directed);
                     for d in directions {
                         follow_path(map, to, d, false, nodes);
                     }
                     break; // reachded node so done with this path
-                } else if directions.len() == 0 {
+                } else if directions.is_empty() {
                     break; // dead end
                 }
                 debug_assert!(directions.len() == 1);
@@ -234,7 +234,7 @@ fn add_node(nodes: &mut Vec<Node>, pos: (usize, usize), from: usize, cost: i32, 
     to
 }
 
-fn next_directions(map: &Vec<Vec<char>>, pos: (usize, usize), dir: (i32, i32)) -> Vec<(i32, i32)> {
+fn next_directions(map: &[Vec<char>], pos: (usize, usize), dir: (i32, i32)) -> Vec<(i32, i32)> {
     let width = map[0].len();
     let height = map.len();
     let mut directions = Vec::new();
@@ -257,7 +257,7 @@ fn next_directions(map: &Vec<Vec<char>>, pos: (usize, usize), dir: (i32, i32)) -
     directions
 }
 
-fn find_node_at(pos: (usize, usize), nodes: &Vec<Node>) -> Option<usize> {
+fn find_node_at(pos: (usize, usize), nodes: &[Node]) -> Option<usize> {
     nodes
         .iter()
         .enumerate()
@@ -265,7 +265,7 @@ fn find_node_at(pos: (usize, usize), nodes: &Vec<Node>) -> Option<usize> {
         .map(|(i, _)| i)
 }
 
-fn is_node(map: &Vec<Vec<char>>, pos: (usize, usize)) -> bool {
+fn is_node(map: &[Vec<char>], pos: (usize, usize)) -> bool {
     let width = map[0].len();
     let height = map.len();
     let mut path_count = 0;
@@ -288,15 +288,13 @@ fn is_node(map: &Vec<Vec<char>>, pos: (usize, usize)) -> bool {
     path_count > 2
 }
 
-fn enumerate_paths(nodes: &Vec<Node>, from: usize, goal: usize) -> Vec<Path> {
+fn enumerate_paths(nodes: &[Node], from: usize, goal: usize) -> Vec<Path> {
     let mut paths = Vec::new();
-    let mut path = Vec::new();
-    path.push(from);
-    enumerate_paths_rec(nodes, from, goal, path.clone(), 0, &mut paths);
+    enumerate_paths_rec(nodes, from, goal, vec![from], 0, &mut paths);
     paths
 }
 
-fn enumerate_paths_rec(nodes: &Vec<Node>, from: usize, goal: usize, mut path: Vec<usize>, total_cost: i32, paths: &mut Vec<Path>) {
+fn enumerate_paths_rec(nodes: &[Node], from: usize, goal: usize, mut path: Vec<usize>, total_cost: i32, paths: &mut Vec<Path>) {
     let from_node = &nodes[from];
     for (next, cost) in &from_node.edges {
         if *next == goal {

@@ -35,17 +35,17 @@ Objects are still a mystery -- object vs. reference and move vs. copy, and wtf i
 
 | Part |  Answer |
 |-----:|--------:|
-|    1 | 9721255 |
+|    1 |   25231 |
 |    2 | 9721255 |
 
 ## Day 5
 
 Well, that escalated quickly! Part 1 is simple. Part 2 shows that it wasn't a scalable solution. Manipulating intervals is interesting stuff. I learned there is something called an interval tree, but I don't think it has any use here.
 
-| Part |  Answer  |
-|-----:|---------:|
-|    1 | 37806486 |
-|    2 | 37806486 |
+| Part |   Answer   |
+|-----:|-----------:|
+|    1 | 1181555926 |
+|    2 |   37806486 |
 
 ## Day 6
 
@@ -62,7 +62,7 @@ Pretty trivial again. Lack of good test data made debugging difficult. Speaking 
 
 | Part |  Answer   |
 |-----:|----------:|
-|    1 | 249138943 |
+|    1 | 250232501 |
 |    2 | 249138943 |
 
 ## Day 8
@@ -75,7 +75,7 @@ Also, a function returning a reference requires specifying the lifetime of the r
 
 | Part |     Answer     |
 |-----:|---------------:|
-|    1 | 21003205388413 |
+|    1 |          19631 |
 |    2 | 21003205388413 |
 
 ## Day 9
@@ -93,7 +93,7 @@ Pretty easy. It helps that I know how to determine if a point is inside a polygo
 
 | Part | Answer |
 |-----:|-------:|
-|    1 |    461 |
+|    1 |   6909 |
 |    2 |    461 |
 
 ## Day 11
@@ -102,7 +102,7 @@ Easy again. I wish Rust weren't so picky about integer types. I'm using `as` eve
 
 | Part |    Answer    |
 |-----:|-------------:|
-|    1 | 560822911938 |
+|    1 |     10033566 |
 |    2 | 560822911938 |
 
 ## Day 12
@@ -131,14 +131,12 @@ Easy again. I am learning about the features of Rust by asking Copilot to improv
 
 Easy again, though I think I could have improved performance so part 2 wouldn't take so long. Instead of moving the rocks 1 cell at a time, I computed the destination for each rock and then swapped it. I think another optimization would be to find the number of rocks in each span and then just assign them to the correct spots and clear the rest. The cost for each span would be 2 scans rather than 1 scan plus 1 scan per rock.
 
-Oddly, I added code to check for stability and it did not detect any. However, I let it run for only 1000000 cycles and coincidentally the result was the correct answer. I may have gotten close enough to stability to get lucky and get the correct result without actually reaching stability.
+Anyway, I discovered that in part 2, the load repeats every 360 cycles, so I only have to do 1,000,000,000 % 360 cycles to get the answer.
 
 | Part | Answer |
 |-----:|-------:|
 |    1 | 106648 |
 |    2 |  87700 |
-
-**Note**: Part 2 takes a very long time to complete -- much longer than the 30 seconds seconds I allowed.
 
 ## Day 15
 

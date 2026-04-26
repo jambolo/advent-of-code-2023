@@ -1,17 +1,18 @@
 use common::load;
 
+#[cfg(not(feature = "part2"))]
+const SORT_ORDER: [char; 13] = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
+
+#[cfg(feature = "part2")]
 const SORT_ORDER: [char; 13] = ['A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J'];
 
 fn main() {
     println!("=== Day 7, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
-    let mut game: Vec<(Vec<char>, i64)> = Vec::new();
-    for line in lines {
-        let play = parse_line(&line);
-        game.push(play);
-    }
-
+    let mut game = lines.into_iter()
+        .map(|line| parse_line(&line))
+        .collect::<Vec<(Vec<char>, i64)>>();
     game.sort_unstable_by(|a, b| hand_sorter(&a.0, &b.0));
 
     let mut sum: i64 = 0;
@@ -27,10 +28,11 @@ fn main() {
 fn card_sorter(a: &char, b: &char) -> std::cmp::Ordering {
     let ia = SORT_ORDER.iter().position(|&x| x == *a).unwrap();
     let ib = SORT_ORDER.iter().position(|&x| x == *b).unwrap();
+
     ia.cmp(&ib)
 }
 
-fn hand_sorter(a: &Vec<char>, b: &Vec<char>) -> std::cmp::Ordering {
+fn hand_sorter(a: &[char], b: &[char]) -> std::cmp::Ordering {
     let a_type = classify(a);
     let b_type = classify(b);
     if a_type != b_type {
@@ -44,52 +46,68 @@ fn hand_sorter(a: &Vec<char>, b: &Vec<char>) -> std::cmp::Ordering {
         }
     }
 
-    return std::cmp::Ordering::Equal;
+    std::cmp::Ordering::Equal
 }
 
-fn parse_line(line: &String) -> (Vec<char>, i64) {
-    let parts: Vec<&str> = line.trim().split_whitespace().collect();
+fn parse_line(line: &str) -> (Vec<char>, i64) {
+    let parts: Vec<&str> = line.split_whitespace().collect();
     let hand = parts[0].chars().collect();
     let bid = parts[1].parse().unwrap();
     (hand, bid)
 }
 
 // Returns the type of hand
-fn classify(hand: &Vec<char>) -> i64 {
-    let mut sorted = hand.clone();
-    sorted.sort_unstable_by(|a, b| card_sorter(a, b));
+fn classify(hand: &[char]) -> i64 {
+    let mut sorted = hand.to_vec();
+    sorted.sort_unstable_by(card_sorter);
 
     if is_five_of_a_kind(&sorted) {
-        return 0;
-    }
-    if is_four_of_a_kind(&sorted) {
-        return 1;
+        0
+    } else if is_four_of_a_kind(&sorted) {
+        1
     } else if is_full_house(&sorted) {
-        return 2;
+        2
     } else if is_three_of_a_kind(&sorted) {
-        return 3;
+        3
     } else if is_two_pair(&sorted) {
-        return 4;
+        4
     } else if is_pair(&sorted) {
-        return 5;
+        5
+    } else {
+        6
     }
-
-    return 6;
 }
 
-// Returns true if the hand is a four of a kind
-fn is_five_of_a_kind(hand: &Vec<char>) -> bool {
+#[cfg(not(feature = "part2"))]
+fn is_five_of_a_kind(hand: &[char]) -> bool {
+    let c = hand[0];
+    hand.iter().all(|&card| card == c)
+}
+
+#[cfg(feature = "part2")]
+fn is_five_of_a_kind(hand: &[char]) -> bool {
     let c = hand[0];
     for card in hand {
         if *card != c && *card != 'J' {
             return false;
         }
     }
-    return true;
+    true
 }
 
-// Returns true if the hand is a four of a kind
-fn is_four_of_a_kind(hand: &Vec<char>) -> bool {
+#[cfg(not(feature = "part2"))]
+fn is_four_of_a_kind(hand: &[char]) -> bool {
+    let mut counts = [0; 13];
+    for &card in hand {
+        if let Some(pos) = SORT_ORDER.iter().position(|&x| x == card) {
+            counts[pos] += 1;
+        }
+    }
+    counts.contains(&4)
+}
+
+#[cfg(feature = "part2")]
+fn is_four_of_a_kind(hand: &[char]) -> bool {
     let mut count = 0;
     let mut last = ' ';
     let number_of_jokers = hand.iter().filter(|&x| *x == 'J').count() as i32;
@@ -106,11 +124,22 @@ fn is_four_of_a_kind(hand: &Vec<char>) -> bool {
             return true;
         }
     }
-    return false;
+    false
 }
 
-// Returns true if the hand is a full house
-fn is_full_house(hand: &Vec<char>) -> bool {
+#[cfg(not(feature = "part2"))]
+fn is_full_house(hand: &[char]) -> bool {
+    let mut counts = [0; 13];
+    for &card in hand {
+        if let Some(pos) = SORT_ORDER.iter().position(|&x| x == card) {
+            counts[pos] += 1;
+        }
+    }
+    counts.contains(&3) && counts.contains(&2)
+}
+
+#[cfg(feature = "part2")]
+fn is_full_house(hand: &[char]) -> bool {
     let mut count1 = 0;
     let mut count2 = 0;
     let mut last1 = ' ';
@@ -135,8 +164,19 @@ fn is_full_house(hand: &Vec<char>) -> bool {
     true
 }
 
-// Returns true if the hand is a three of a kind
-fn is_three_of_a_kind(hand: &Vec<char>) -> bool {
+#[cfg(not(feature = "part2"))]
+fn is_three_of_a_kind(hand: &[char]) -> bool {
+    let mut counts = [0; 13];
+    for &card in hand {
+        if let Some(pos) = SORT_ORDER.iter().position(|&x| x == card) {
+            counts[pos] += 1;
+        }
+    }
+    counts.contains(&3)
+}
+
+#[cfg(feature = "part2")]
+fn is_three_of_a_kind(hand: &[char]) -> bool {
     let mut count = 0;
     let mut last = ' ';
     let number_of_jokers = hand.iter().filter(|&x| *x == 'J').count() as i32;
@@ -153,11 +193,22 @@ fn is_three_of_a_kind(hand: &Vec<char>) -> bool {
             return true;
         }
     }
-    return false;
+    false
 }
 
-// Returns true if the hand is a two pair
-fn is_two_pair(hand: &Vec<char>) -> bool {
+#[cfg(not(feature = "part2"))]
+fn is_two_pair(hand: &[char]) -> bool {
+    let mut counts = [0; 13];
+    for &card in hand {
+        if let Some(pos) = SORT_ORDER.iter().position(|&x| x == card) {
+            counts[pos] += 1;
+        }
+    }
+    counts.iter().filter(|&&c| c == 2).count() == 2
+}
+
+#[cfg(feature = "part2")]
+fn is_two_pair(hand: &[char]) -> bool {
     let mut count1 = 0;
     let mut count2 = 0;
     let mut count3 = 0;
@@ -189,8 +240,19 @@ fn is_two_pair(hand: &Vec<char>) -> bool {
     true
 }
 
-// Returns true if the hand is a pair
-fn is_pair(hand: &Vec<char>) -> bool {
+#[cfg(not(feature = "part2"))]
+fn is_pair(hand: &[char]) -> bool {
+    let mut counts = [0; 13];
+    for &card in hand {
+        if let Some(pos) = SORT_ORDER.iter().position(|&x| x == card) {
+            counts[pos] += 1;
+        }
+    }
+    counts.iter().filter(|&&c| c == 2).count() == 1
+}
+
+#[cfg(feature = "part2")]
+fn is_pair(hand: &[char]) -> bool {
     let mut count = 0;
     let mut last = ' ';
     let number_of_jokers = hand.iter().filter(|&x| *x == 'J').count() as i32;
@@ -207,5 +269,5 @@ fn is_pair(hand: &Vec<char>) -> bool {
             return true;
         }
     }
-    return false;
+    false
 }

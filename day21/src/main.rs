@@ -72,7 +72,7 @@ fn main() {
     println!("Result: {}", terminals.len());
 }
 
-fn find_start(map: &Vec<Vec<char>>) -> Option<(usize, usize)> {
+fn find_start(map: &[Vec<char>]) -> Option<(usize, usize)> {
     map.iter().enumerate().find_map(|(y, row)| {
         row.iter()
             .enumerate()

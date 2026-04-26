@@ -1,5 +1,8 @@
 use common::load;
 
+type Position = (i32, i32, i32);
+type Volume = (Position, Position);
+
 fn main() {
     println!("=== Day 22, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
 
@@ -26,8 +29,8 @@ fn main() {
     println!("Result: {}", disintegratable.len());
 }
 
-fn parse_bricks(lines: &Vec<String>) -> Vec<((i32, i32, i32), (i32, i32, i32))> {
-    let mut bricks: Vec<((i32, i32, i32), (i32, i32, i32))> = Vec::new();
+fn parse_bricks(lines: &[String]) -> Vec<Volume> {
+    let mut bricks: Vec<Volume> = Vec::new();
     for line in lines {
         let corners: Vec<&str> = line.split("~").collect();
         let c0: Vec<i32> = corners[0].split(",").map(|s| s.parse().unwrap()).collect();
@@ -37,8 +40,8 @@ fn parse_bricks(lines: &Vec<String>) -> Vec<((i32, i32, i32), (i32, i32, i32))> 
     bricks
 }
 
-fn find_extents(bricks: &Vec<((i32, i32, i32), (i32, i32, i32))>) -> ((i32, i32, i32), (i32, i32, i32)) {
-    let extents: ((i32, i32, i32), (i32, i32, i32)) =
+fn find_extents(bricks: &[Volume]) -> Volume {
+    let extents: Volume =
         bricks
             .into_iter()
             .fold(((std::i32::MAX, std::i32::MAX, std::i32::MAX), (0, 0, 0)), |acc, brick| {
@@ -49,7 +52,7 @@ fn find_extents(bricks: &Vec<((i32, i32, i32), (i32, i32, i32))>) -> ((i32, i32,
     extents
 }
 
-fn drop(bricks: &mut Vec<((i32, i32, i32), (i32, i32, i32))>, extents: ((i32, i32, i32), (i32, i32, i32))) {
+fn drop(bricks: &mut [Volume], extents: Volume) {
     let mut heights: Vec<Vec<i32>> = vec![vec![1; extents.1 .0 as usize + 1]; extents.1 .1 as usize + 1];
     for brick in bricks {
         let distance = brick.0 .2 - highest_z_under(&brick, &heights);
@@ -61,7 +64,7 @@ fn drop(bricks: &mut Vec<((i32, i32, i32), (i32, i32, i32))>, extents: ((i32, i3
     }
 }
 
-fn pile(brick: &((i32, i32, i32), (i32, i32, i32)), heights: &mut Vec<Vec<i32>>) {
+fn pile(brick: &Volume, heights: &mut [Vec<i32>]) {
     for x in brick.0 .0..=brick.1 .0 {
         for y in brick.0 .1..=brick.1 .1 {
             heights[y as usize][x as usize] = brick.1 .2 + 1;
@@ -69,7 +72,7 @@ fn pile(brick: &((i32, i32, i32), (i32, i32, i32)), heights: &mut Vec<Vec<i32>>)
     }
 }
 
-fn highest_z_under(brick: &((i32, i32, i32), (i32, i32, i32)), heights: &Vec<Vec<i32>>) -> i32 {
+fn highest_z_under(brick: &Volume, heights: &[Vec<i32>]) -> i32 {
     let min_x = brick.0 .0;
     let max_x = brick.1 .0;
     let min_y = brick.0 .1;
@@ -80,7 +83,7 @@ fn highest_z_under(brick: &((i32, i32, i32), (i32, i32, i32)), heights: &Vec<Vec
         .unwrap()
 }
 
-fn supports(bricks: &Vec<((i32, i32, i32), (i32, i32, i32))>) -> Vec<Vec<usize>> {
+fn supports(bricks: &[Volume]) -> Vec<Vec<usize>> {
     let mut supporting: Vec<Vec<usize>> = vec![Vec::new(); bricks.len()];
 
     for (i, brick_i) in bricks.iter().enumerate() {
@@ -104,11 +107,11 @@ fn supports(bricks: &Vec<((i32, i32, i32), (i32, i32, i32))>) -> Vec<Vec<usize>>
     supporting
 }
 
-fn overlaps_xy(brick0: &((i32, i32, i32), (i32, i32, i32)), brick1: &((i32, i32, i32), (i32, i32, i32))) -> bool {
+fn overlaps_xy(brick0: &Volume, brick1: &Volume) -> bool {
     brick0.1 .0 >= brick1.0 .0 && brick0.0 .0 <= brick1.1 .0 && brick0.1 .1 >= brick1.0 .1 && brick0.0 .1 <= brick1.1 .1
 }
 
-fn supported_by(supports: &Vec<Vec<usize>>) -> Vec<Vec<usize>> {
+fn supported_by(supports: &[Vec<usize>]) -> Vec<Vec<usize>> {
     let mut brick_supported_by: Vec<Vec<usize>> = vec![Vec::new(); supports.len()];
     for (i, support_list) in supports.iter().enumerate() {
         for &j in support_list {
@@ -118,12 +121,12 @@ fn supported_by(supports: &Vec<Vec<usize>>) -> Vec<Vec<usize>> {
     brick_supported_by
 }
 
-fn find_disintegratable_bricks(supports: &Vec<Vec<usize>>, supported_by: &Vec<Vec<usize>>) -> Vec<usize> {
+fn find_disintegratable_bricks(supports: &[Vec<usize>], supported_by: &[Vec<usize>]) -> Vec<usize> {
     let disintegratable: Vec<usize> = supports
         .iter()
         .enumerate()
         .filter_map(|(i, support_list)| {
-            if support_list.len() == 0 || support_list.iter().all(|&j| supported_by[j].len() > 1) {
+            if support_list.is_empty() || support_list.iter().all(|&j| supported_by[j].len() > 1) {
                 Some(i)
             } else {
                 None

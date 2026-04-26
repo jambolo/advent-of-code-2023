@@ -40,7 +40,7 @@ fn main() {
                 }
                 x = new_x;
             }
-            x = x + 1;
+            x += 1;
         }
     }
 
@@ -71,7 +71,7 @@ fn is_gear(ch: char) -> bool {
 }
 
 // Returns true if the character adjacent to a symbol
-fn is_adjacent_to_symbol(grid: &Vec<Vec<char>>, x: usize, y: usize) -> bool {
+fn is_adjacent_to_symbol(grid: &[Vec<char>], x: usize, y: usize) -> bool {
     if x > 0 {
         if is_symbol(grid[y][x - 1]) {
             return true;
@@ -107,7 +107,7 @@ fn is_adjacent_to_symbol(grid: &Vec<Vec<char>>, x: usize, y: usize) -> bool {
 }
 
 // Returns true if the character adjacent to a symbol
-fn find_adjacent_gears(grid: &Vec<Vec<char>>, x: usize, y: usize, gears: &mut BTreeSet<(usize, usize)>) {
+fn find_adjacent_gears(grid: &[Vec<char>], x: usize, y: usize, gears: &mut BTreeSet<(usize, usize)>) {
     if x > 0 {
         if is_gear(grid[y][x - 1]) {
             gears.insert((x - 1, y));
@@ -140,7 +140,7 @@ fn find_adjacent_gears(grid: &Vec<Vec<char>>, x: usize, y: usize, gears: &mut BT
     }
 }
 
-fn scan_number(grid: &Vec<Vec<char>>, x0: usize, y0: usize) -> (usize, u32, bool, BTreeSet<(usize, usize)>) {
+fn scan_number(grid: &[Vec<char>], x0: usize, y0: usize) -> (usize, u32, bool, BTreeSet<(usize, usize)>) {
     let mut xn = x0;
     let mut value = 0;
     let mut is_part_number = false;
@@ -151,7 +151,7 @@ fn scan_number(grid: &Vec<Vec<char>>, x0: usize, y0: usize) -> (usize, u32, bool
             is_part_number = true;
             find_adjacent_gears(grid, xn, y0, &mut adjacent_gears);
         }
-        xn = xn + 1;
+        xn += 1;
     }
     (xn, value, is_part_number, adjacent_gears)
 }

@@ -65,12 +65,12 @@ fn load_modules(lines: &[String]) -> HashMap<String, Module> {
     let mut sources_by_destination: HashMap<String, HashMap<String, bool>> = HashMap::new();
     for (name, module) in &modules {
         for destination in &module.destinations {
-            if modules.get(destination).is_none() {
+            if !modules.contains_key(destination) {
                 panic!("Module {} has an unknown destination: {}", name, destination);
             }
             sources_by_destination
                 .entry(destination.clone())
-                .or_insert_with(HashMap::new)
+                .or_default()
                 .insert(name.clone(), false);
         }
     }
@@ -170,7 +170,7 @@ fn step(module: &mut Module, input: bool, from: &str) -> Option<bool> {
     match module.module_type.as_str() {
         "%" => {
             // Flip-flop (outputs only if input is false)
-            if input == false {
+            if !input {
                 module.state = !module.state;
                 output = Some(module.state);
             }

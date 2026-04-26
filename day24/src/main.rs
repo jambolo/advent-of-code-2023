@@ -33,7 +33,7 @@ fn main() {
     println!("Result: {}", intersection_count);
 }
 
-fn parse_stones(lines: &Vec<String>) -> Vec<Stone> {
+fn parse_stones(lines: &[String]) -> Vec<Stone> {
     let mut stones = Vec::new();
     for line in lines {
         let pv: Vec<&str> = line.split("@").collect();

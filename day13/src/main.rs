@@ -36,7 +36,7 @@ fn load_maps(lines: &[String]) -> Vec<Vec<Vec<char>>> {
     maps
 }
 
-fn find_vertical_mirror(m: &Vec<Vec<char>>) -> Option<i32> {
+fn find_vertical_mirror(m: &[Vec<char>]) -> Option<i32> {
     let num_columns = m[0].len();
     for i in 1..num_columns {
         let span = std::cmp::min(i, num_columns - i);
@@ -69,11 +69,11 @@ fn find_vertical_mirror(m: &Vec<Vec<char>>) -> Option<i32> {
     None
 }
 
-fn columns_eq(m: &Vec<Vec<char>>, j0: usize, j1: usize) -> bool {
+fn columns_eq(m: &[Vec<char>], j0: usize, j1: usize) -> bool {
     m.iter().all(|row| row[j0] == row[j1])
 }
 
-fn smudged_columns_eq(m: &Vec<Vec<char>>, j0: usize, j1: usize, smudged: bool) -> (bool, bool) {
+fn smudged_columns_eq(m: &[Vec<char>], j0: usize, j1: usize, smudged: bool) -> (bool, bool) {
     let same = columns_eq(m, j0, j1);
     if !same && !smudged && columns_differ_by_one(m, j0, j1) {
         (true, true)
@@ -82,22 +82,11 @@ fn smudged_columns_eq(m: &Vec<Vec<char>>, j0: usize, j1: usize, smudged: bool) -
     }
 }
 
-fn columns_differ_by_one(m: &Vec<Vec<char>>, j0: usize, j1: usize) -> bool {
-    let mut differ_by_one = false;
-
-    for i in 0..m.len() {
-        if m[i][j0] != m[i][j1] {
-            if differ_by_one {
-                return false; // If we already found one difference, return false
-            }
-            differ_by_one = true;
-        }
-    }
-
-    differ_by_one
+fn columns_differ_by_one(m: &[Vec<char>], j0: usize, j1: usize) -> bool {
+    m.iter().filter(|row| row[j0] != row[j1]).take(2).count() == 1
 }
 
-fn find_horizontal_mirror(m: &Vec<Vec<char>>) -> Option<i32> {
+fn find_horizontal_mirror(m: &[Vec<char>]) -> Option<i32> {
     for i in 1..m.len() {
         let span = std::cmp::min(i, m.len() - i);
         let mut mirrored = true;
@@ -129,11 +118,11 @@ fn find_horizontal_mirror(m: &Vec<Vec<char>>) -> Option<i32> {
     None
 }
 
-fn rows_eq(m: &Vec<Vec<char>>, i0: usize, i1: usize) -> bool {
+fn rows_eq(m: &[Vec<char>], i0: usize, i1: usize) -> bool {
     m[i0] == m[i1]
 }
 
-fn smudged_rows_eq(m: &Vec<Vec<char>>, i0: usize, i1: usize, smudged: bool) -> (bool, bool) {
+fn smudged_rows_eq(m: &[Vec<char>], i0: usize, i1: usize, smudged: bool) -> (bool, bool) {
     let same = rows_eq(m, i0, i1);
     if !same && !smudged && rows_differ_by_one(m, i0, i1) {
         (true, true)
@@ -142,17 +131,6 @@ fn smudged_rows_eq(m: &Vec<Vec<char>>, i0: usize, i1: usize, smudged: bool) -> (
     }
 }
 
-fn rows_differ_by_one(m: &Vec<Vec<char>>, i0: usize, i1: usize) -> bool {
-    let mut differ_by_one = false;
-
-    for j in 0..m[0].len() {
-        if m[i0][j] != m[i1][j] {
-            if differ_by_one {
-                return false; // If we already found one difference, return false
-            }
-            differ_by_one = true;
-        }
-    }
-
-    differ_by_one
+fn rows_differ_by_one(m: &[Vec<char>], i0: usize, i1: usize) -> bool {
+    m[i0].iter().zip(&m[i1]).filter(|(a, b)| a != b).take(2).count() == 1
 }

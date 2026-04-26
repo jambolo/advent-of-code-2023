@@ -107,7 +107,7 @@ fn energize(mut map: Vec<Vec<char>>, start: Branch) -> i32 {
     energized.iter().flatten().sum()
 }
 
-fn move_right(map: &mut Vec<Vec<char>>, mut x: usize, y: usize, branches: &mut Vec<Branch>, energized: &mut Vec<Vec<i32>>) {
+fn move_right(map: &mut [Vec<char>], mut x: usize, y: usize, branches: &mut Vec<Branch>, energized: &mut [Vec<i32>]) {
     let right_edge = map[0].len() - 1;
     let bottom_edge = map.len() - 1;
 
@@ -137,7 +137,7 @@ fn move_right(map: &mut Vec<Vec<char>>, mut x: usize, y: usize, branches: &mut V
     }
 }
 
-fn move_up(map: &mut Vec<Vec<char>>, x: usize, mut y: usize, branches: &mut Vec<Branch>, energized: &mut Vec<Vec<i32>>) {
+fn move_up(map: &mut [Vec<char>], x: usize, mut y: usize, branches: &mut Vec<Branch>, energized: &mut [Vec<i32>]) {
     let right_edge = map[0].len() - 1;
     let _bottom_edge = map.len() - 1;
 
@@ -167,7 +167,7 @@ fn move_up(map: &mut Vec<Vec<char>>, x: usize, mut y: usize, branches: &mut Vec<
     }
 }
 
-fn move_left(map: &mut Vec<Vec<char>>, mut x: usize, y: usize, branches: &mut Vec<Branch>, energized: &mut Vec<Vec<i32>>) {
+fn move_left(map: &mut [Vec<char>], mut x: usize, y: usize, branches: &mut Vec<Branch>, energized: &mut [Vec<i32>]) {
     let _right_edge = map[0].len() - 1;
     let bottom_edge = map.len() - 1;
 
@@ -197,7 +197,7 @@ fn move_left(map: &mut Vec<Vec<char>>, mut x: usize, y: usize, branches: &mut Ve
     }
 }
 
-fn move_down(map: &mut Vec<Vec<char>>, x: usize, mut y: usize, branches: &mut Vec<Branch>, energized: &mut Vec<Vec<i32>>) {
+fn move_down(map: &mut [Vec<char>], x: usize, mut y: usize, branches: &mut Vec<Branch>, energized: &mut [Vec<i32>]) {
     let right_edge = map[0].len() - 1;
     let bottom_edge = map.len() - 1;
 
@@ -267,7 +267,7 @@ fn branch_right(x: usize, y: usize, edge: usize, branches: &mut Vec<Branch>) {
     }
 }
 
-fn _print_map(map: &Vec<Vec<char>>) {
+fn _print_map(map: &[Vec<char>]) {
     for row in map {
         for c in row {
             print!("{}", c);

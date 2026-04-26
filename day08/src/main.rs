@@ -2,6 +2,8 @@ use common::load;
 use regex::Regex;
 use std::collections::HashMap;
 
+type Graph = HashMap<String, (String, String)>;
+
 fn main() {
     println!("=== Day 8, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
@@ -10,7 +12,7 @@ fn main() {
     let path: Vec<char> = lines[0].chars().collect();
 
     // Load the graph
-    let mut graph: HashMap<String, (String, String)> = HashMap::new();
+    let mut graph: Graph = HashMap::new();
     let graph_regex = Regex::new(r"(\w+)\s*=\s*\((\w+),\s*(\w+)\)").unwrap();
     for line in &lines[2..] {
         if let Some(captures) = graph_regex.captures(line) {
@@ -21,18 +23,17 @@ fn main() {
         }
     }
 
+    let result = if cfg!(feature = "part2") { part2(&graph, &path) } else { part1(&graph, &path) };
+    println!("Result: {}", result);
+}
+
+fn part2(graph: &Graph, path: &[char]) -> i64 {
     // Find the node names ending in 'A'
     let mut ghosts: Vec<String> = Vec::new();
     for node_name in graph.keys() {
         if node_name.chars().nth(2).unwrap() == 'A' {
             ghosts.push(node_name.clone());
         }
-    }
-
-    // Put the ghosts at their starting nodes
-    let mut ghost_node_names: Vec<&String> = Vec::new();
-    for node_name in &ghosts {
-        ghost_node_names.push(node_name)
     }
 
     struct Stat {
@@ -76,15 +77,24 @@ fn main() {
         debug_assert!(stat.first % 293 == 0);
         product *= (stat.first / 293) as i64;
     }
-    product *= 293;
-    println!("Result: {}", product);
+
+    product * 293
 }
 
-fn step<'a>(graph: &'a HashMap<String, (String, String)>, node_name: &String, direction: char) -> &'a String {
-    let node = graph.get(node_name).unwrap();
-    if direction == 'L' {
-        return &node.0;
-    } else {
-        return &node.1;
+fn part1(graph: &Graph, path: &[char]) -> i64 {
+    // Part 1: Walk from AAA to ZZZ
+    let mut count: usize = 0;
+    let mut node_name = "AAA";
+    while node_name != "ZZZ" {
+        let direction = path[count % path.len()];
+        node_name = step(&graph, node_name, direction);
+        count += 1;
     }
+
+    count as i64
+}
+
+fn step<'a>(graph: &'a Graph, node_name: &str, direction: char) -> &'a String {
+    let node = graph.get(node_name).unwrap();
+    if direction == 'L' { &node.0 } else { &node.1 }
 }

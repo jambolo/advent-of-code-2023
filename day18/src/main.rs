@@ -121,7 +121,7 @@ fn parse_steps(lines: &[String]) -> Vec<Step> {
             let step = Step {
                 direction: direction_m.as_str().chars().next().expect("Missing direction"),
                 distance: distance_m.as_str().parse().expect("Invalid distance"),
-                color: u32::from_str_radix(&color_m.as_str(), 16).expect("Invalid color"),
+                color: u32::from_str_radix(color_m.as_str(), 16).expect("Invalid color"),
             };
             steps.push(step);
         } else {
@@ -181,7 +181,7 @@ fn create_map(width: usize, height: usize, start: (usize, usize), steps: &[Step]
     map
 }
 
-// fn print_map(map: &Vec<Vec<char>>) {
+// fn print_map(map: &[Vec<char>]) {
 //     for row in map {
 //         for cell in row {
 //             print!("{}", cell);
