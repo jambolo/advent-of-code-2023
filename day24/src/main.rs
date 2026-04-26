@@ -13,7 +13,7 @@ struct Stone {
 }
 
 fn main() {
-    println!("Day 24, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 24, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
 
     // Load the data
     let lines = load::lines().unwrap();
@@ -30,7 +30,7 @@ fn main() {
                 .filter_map(move |stone_j| intersects_xy(stone_i, stone_j))
         })
         .count();
-    println!("Intersection count: {}", intersection_count);
+    println!("Result: {}", intersection_count);
 }
 
 fn parse_stones(lines: &Vec<String>) -> Vec<Stone> {

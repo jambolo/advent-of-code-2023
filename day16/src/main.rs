@@ -15,7 +15,7 @@ struct Branch {
 }
 
 fn main() {
-    println!("Day 16, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 16, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
 
     let map = load::map().unwrap();
 
@@ -27,7 +27,7 @@ fn main() {
             y: 0,
         };
         let energize = energize(map, start);
-        println!("Energized cells: {}", energize);
+        println!("Result: {}", energize);
     }
     #[cfg(feature = "part2")]
     {
@@ -79,7 +79,7 @@ fn main() {
                 max = energize;
             }
         }
-        println!("Max energized cells: {}", max);
+        println!("Result: {}", max);
     }
 }
 

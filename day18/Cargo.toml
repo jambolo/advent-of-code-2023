@@ -1,13 +1,13 @@
 [package]
 name = "day18"
-edition = "2021"
+edition = "2024"
 version.workspace = true
 authors.workspace = true
 description.workspace = true
 
 [dependencies]
 common = { path = "../common" }
-regex = "1.11.1"
+regex = "1.12.3"
 
 [features]
 part2 = []

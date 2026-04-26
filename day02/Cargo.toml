@@ -1,6 +1,6 @@
 [package]
 name = "day02"
-edition = "2021"
+edition = "2024"
 version.workspace = true
 authors.workspace = true
 description.workspace = true
@@ -9,7 +9,7 @@ description.workspace = true
 
 [dependencies]
 common = { path = "../common" }
-regex = "1.10.2"
+regex = "1.12.3"
 
 [features]
 part2 = []

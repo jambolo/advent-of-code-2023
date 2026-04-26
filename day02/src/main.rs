@@ -6,7 +6,7 @@ use regex::Regex;
 const MAX: (i32, i32, i32) = (12, 13, 14);
 
 fn main() {
-    println!("Day 2, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 2, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
 
     let games = load::lines().unwrap();
 
@@ -55,7 +55,7 @@ fn part1(games: &[String]) {
         }
     }
 
-    println!("Sum of game ids is {}", id_sum);
+    println!("Result: {}", id_sum);
 }
 
 #[cfg(feature = "part2")]
@@ -106,5 +106,5 @@ fn part2(games: &[String]) {
         }
     }
 
-    println!("Sum of powers is {}", sum_of_powers);
+    println!("Result: {}", sum_of_powers);
 }

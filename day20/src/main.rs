@@ -22,7 +22,7 @@ impl Module {
 }
 
 fn main() {
-    println!("Day 20, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 20, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
 
     let lines = load::lines().unwrap();
     let mut modules = load_modules(&lines);
@@ -101,7 +101,7 @@ fn part1(modules: &mut HashMap<String, Module>) {
         high_count += high;
     }
 
-    println!("Answer: {}", low_count * high_count);
+    println!("Result: {}", low_count * high_count);
 }
 
 #[cfg(feature = "part2")]
@@ -135,7 +135,7 @@ fn part2(modules: &mut HashMap<String, Module>) {
             ns_triggered.and_then(|ns| bh_triggered.and_then(|bh| dl_triggered.and_then(|dl| Some(vd * ns * bh * dl))))
         });
         if let Some(p) = product {
-            println!("Product of triggered counts: {}", p);
+            println!("Result: {}", p);
             break;
         }
     }

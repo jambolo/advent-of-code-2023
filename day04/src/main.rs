@@ -1,7 +1,7 @@
 use common::load;
 
 fn main() {
-    println!("Day 4, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 4, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     // Parse the cards
@@ -32,7 +32,7 @@ fn main() {
         }
     }
 
-    println!("Count: {}", count);
+    println!("Result: {}", count);
 }
 
 // Returns the intersection of two sorted vectors

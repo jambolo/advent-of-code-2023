@@ -1,7 +1,7 @@
 use common::load;
 
 fn main() {
-    println!("Day 9, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 9, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     #[cfg(not(feature = "part2"))]
@@ -38,10 +38,10 @@ fn main() {
     }
 
     #[cfg(not(feature = "part2"))]
-    println!("nsum: {}", nsum);
+    println!("Result: {}", nsum);
 
     #[cfg(feature = "part2")]
-    println!("psum: {}", psum);
+    println!("Result: {}", psum);
 }
 
 fn all_zeros(sequence: &Vec<i64>) -> bool {

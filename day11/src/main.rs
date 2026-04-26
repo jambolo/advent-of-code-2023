@@ -3,14 +3,14 @@ use common::load;
 const EXPANSION: i64 = 1000000 - 1;
 
 fn main() {
-    println!("Day 11, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 11, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let galaxy = load::lines().unwrap();
 
     let (xr, xc) = expand(&galaxy);
     let stars = find_stars(&galaxy);
     let distances = find_distances(&stars, &xr, &xc);
 
-    println!("Sum of distances: {}", distances.iter().sum::<i64>());
+    println!("Result: {}", distances.iter().sum::<i64>());
 }
 
 fn find_distances(stars: &Vec<(usize, usize)>, xr: &Vec<usize>, xc: &Vec<usize>) -> Vec<i64> {

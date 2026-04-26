@@ -31,7 +31,7 @@ struct Path {
 }
 
 fn main() {
-    println!("Day 23, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 23, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
 
     // Load the map
     let map = load::map().unwrap();
@@ -49,7 +49,7 @@ fn main() {
     // Now we have a graph, let's find all of the paths
     let paths = enumerate_paths(&nodes, 0, 1);
     let max_cost = paths.iter().map(|p| p.cost).max().unwrap();
-    println!("Max cost: {}", max_cost);
+    println!("Result: {}", max_cost);
 }
 
 fn follow_path(map: &Vec<Vec<char>>, from: usize, mut dir: (i32, i32), mut directed: bool, nodes: &mut Vec<Node>) {

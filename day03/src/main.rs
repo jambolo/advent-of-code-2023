@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 
 fn main() {
-    println!("Day 3, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 3, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     // Create a 2D array of characters
@@ -45,7 +45,7 @@ fn main() {
     }
 
     #[cfg(not(feature = "part2"))]
-    println!("Sum: {}", sum);
+    println!("Result: {}", sum);
 
     #[cfg(feature = "part2")]
     {
@@ -56,7 +56,7 @@ fn main() {
             }
         }
 
-        println!("Gear ratio sum: {}", gear_ratio_sum);
+        println!("Result: {}", gear_ratio_sum);
     }
 }
 

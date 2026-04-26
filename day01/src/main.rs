@@ -77,25 +77,28 @@ fn last_value((a1, a2): (usize, u32), (b1, b2): (usize, usize)) -> u32 {
     }
 }
 fn main() {
-    println!("Day 1, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 1, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     let mut sum = 0;
     for line in lines {
         let first_number = first_number_in(&line).unwrap();
-        let (_, mut first_digit) = first_number;
-        let first_name = first_name_in(&line);
-        if first_name.is_some() {
-            first_digit = first_value(first_number, first_name.unwrap());
-        }
         let last_number = last_number_in(&line).unwrap();
-        let (_, mut last_digit) = last_number;
-        let last_name = last_name_in(&line);
-        if last_name.is_some() {
-            last_digit = last_value(last_number, last_name.unwrap());
+
+        let mut first_digit = first_number.1;
+        let mut last_digit = last_number.1;
+
+        if cfg!(feature = "part2")
+        {
+            if let Some(first_name) = first_name_in(&line){
+                first_digit = first_value(first_number, first_name);
+            }
+            if let Some(last_name) = last_name_in(&line){
+                last_digit = last_value(last_number, last_name);
+            }
         }
         sum += first_digit * 10 + last_digit;
     }
 
-    println!("Sum: {}", sum);
+    println!("Result: {}", sum);
 }

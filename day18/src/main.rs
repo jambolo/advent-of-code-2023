@@ -12,7 +12,7 @@ struct Step {
 }
 
 fn main() {
-    println!("Day 18, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 18, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
 
     let lines = load::lines().unwrap();
     let steps: Vec<Step> = parse_steps(&lines);
@@ -39,7 +39,7 @@ fn part1(steps: &[Step]) {
     flood_fill(&mut map, interior_point);
 
     let volume = compute_volume(&map);
-    println!("Volume: {}", volume);
+    println!("Result: {}", volume);
 }
 
 #[cfg(feature = "part2")]
@@ -69,7 +69,7 @@ fn part2(steps: &[Step]) {
     let inner_area = area(&vertices);
     let perimeter_area = perimeter(&vertices) / 2;
     let total_area = inner_area + perimeter_area + 1;
-    println!("Area: {}", total_area);
+    println!("Result: {}", total_area);
 }
 
 #[cfg(feature = "part2")]
@@ -77,7 +77,7 @@ fn area(vertices: &[(i64, i64)]) -> i64 {
     let n = vertices.len();
     let a: i64 = vertices.iter()
         .zip(vertices.iter().cycle().skip(1))
-        .take(n) 
+        .take(n)
         .map(|(v0, v1)| (v0.0 * v1.1) - (v1.0 * v0.1))
         .sum();
 
@@ -89,7 +89,7 @@ fn perimeter(vertices: &[(i64, i64)]) -> i64 {
     let n = vertices.len();
     let p: i64 = vertices.iter()
         .zip(vertices.iter().cycle().skip(1))
-        .take(n) 
+        .take(n)
         .map(|(v0, v1)| (v1.0 - v0.0).abs() + (v1.1 - v0.1).abs())
         .sum();
 

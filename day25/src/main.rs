@@ -2,7 +2,7 @@ use common::load;
 use std::collections::HashMap;
 
 fn main() {
-    println!("Day 25, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 25, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
 
     // Load the data
     let lines = load::lines().unwrap();
@@ -26,7 +26,7 @@ fn main() {
     }
     let a = count_reachable_nodes(&graph, node0);
     let b = graph.len() - a;
-    println!("Part 1: {}", a * b);
+    println!("Result: {}", a * b);
 }
 
 fn parse_graph(lines: &Vec<String>) -> HashMap<usize, Vec<usize>> {

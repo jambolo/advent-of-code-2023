@@ -6,7 +6,7 @@ const MIN_RUN: usize = if cfg!(feature = "part2") { 4 } else { 1 };
 const MAX_RUN: usize = if cfg!(feature = "part2") { 10 } else { 3 };
 
 fn main() {
-    println!("Day 17, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 17, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
 
     let map = load::numbers_map().unwrap();
     let start: (usize, usize) = (0, 0);
@@ -17,7 +17,7 @@ fn main() {
     let h = |(r, c): (usize, usize)| lowest_unrestricted_costs[r][c];
 
     let cost = shortest_path(start, goal, h, &map);
-    println!("Shortest path: {}", cost);
+    println!("Result: {}", cost);
 }
 
 // Builds a map of the shortest unrestricted distances from each cell to the goal using Dijkstra's algorithm

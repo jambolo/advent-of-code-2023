@@ -1,7 +1,7 @@
 use common::load;
 
 fn main() {
-    println!("Day 13, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 13, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
     let maps = load_maps(&lines);
     let mut sum: i32 = 0;
@@ -14,7 +14,7 @@ fn main() {
             panic!("Error: no split found");
         }
     }
-    println!("Sum: {}", sum);
+    println!("Result: {}", sum);
 }
 
 fn load_maps(lines: &[String]) -> Vec<Vec<Vec<char>>> {

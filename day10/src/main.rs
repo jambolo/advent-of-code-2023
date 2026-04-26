@@ -1,7 +1,7 @@
 use common::load;
 
 fn main() {
-    println!("Day 10, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 10, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     let mut grid: Vec<Vec<char>> = Vec::new();
@@ -40,7 +40,7 @@ fn main() {
         }
     }
 
-    println!("number of inside points: {}", number_of_inside_points);
+    println!("Result: {}", number_of_inside_points);
 }
 
 fn clear_unoccupied_points(grid: &mut Vec<Vec<char>>, occupied: &Vec<Vec<bool>>) {

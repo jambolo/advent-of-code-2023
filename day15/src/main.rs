@@ -3,12 +3,12 @@ use common::load;
 use regex::Regex;
 
 fn main() {
-    println!("Day 15, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 15, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     #[cfg(not(feature = "part2"))]
     {
         let steps = load::comma_separated_values().unwrap();
         let sum: u64 = steps.iter().map(|s| hash(s)).sum();
-        println!("Sum: {}", sum);
+        println!("Result: {}", sum);
     }
 
     #[cfg(feature = "part2")]
@@ -62,7 +62,7 @@ fn main() {
                 .enumerate()
                 .fold(0, |a1, (i, lens)| a1 + focusing_power(b, i, lens.f))
         });
-        println!("Sum: {}", sum);
+        println!("Result: {}", sum);
     }
 }
 

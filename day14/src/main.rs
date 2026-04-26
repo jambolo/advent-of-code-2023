@@ -3,7 +3,7 @@ use common::load;
 const CYCLES: i64 = 1000000;
 
 fn main() {
-    println!("Day 14, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 14, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
     let mut map: Vec<Vec<char>> = vec![];
     for line in lines {
@@ -18,11 +18,7 @@ fn main() {
             tip_west(&mut map);
             tip_south(&mut map);
             tip_east(&mut map);
-            if i % (CYCLES / 10) == 0 {
-                println!("Cycles: {:.0}%", (i as f64 / CYCLES as f64 * 100.0).round());
-            }
             if previous == map {
-                println!("Stable after {} cycles", i);
                 break;
             }
             previous = map.clone();
@@ -31,7 +27,7 @@ fn main() {
         tip_north(&mut map);
     }
 
-    println!("Load: {}", map_load(&map));
+    println!("Result: {}", map_load(&map));
 }
 
 fn tip_north(map: &mut Vec<Vec<char>>) {

@@ -4,7 +4,7 @@ use std::collections::HashSet;
 const NUMBER_OF_STEPS: i64 = 64;
 
 fn main() {
-    println!("Day 21, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 21, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
 
     // Load the map
     let map = load::map().unwrap();
@@ -69,7 +69,7 @@ fn main() {
     }
 
     // Print the result
-    println!("Number of terminals: {}", terminals.len());
+    println!("Result: {}", terminals.len());
 }
 
 fn find_start(map: &Vec<Vec<char>>) -> Option<(usize, usize)> {

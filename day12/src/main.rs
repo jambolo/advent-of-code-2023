@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use common::load;
 
 fn main() {
-    println!("Day 12, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 12, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     let mut sum: i64 = 0;
@@ -16,7 +16,7 @@ fn main() {
         sum += count;
     }
 
-    println!("Sum: {}", sum);
+    println!("Result: {}", sum);
 }
 
 fn insert_ones(x: u128, n: usize) -> u128 {

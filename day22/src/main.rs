@@ -1,7 +1,7 @@
 use common::load;
 
 fn main() {
-    println!("Day 22, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 22, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
 
     // Load the map
     let lines = load::lines().unwrap();
@@ -23,7 +23,7 @@ fn main() {
 
     // Find all bricks that are not the only support for any brick
     let disintegratable: Vec<usize> = find_disintegratable_bricks(&brick_supports, &brick_supported_by);
-    println!("Number of disintegratable bricks: {}", disintegratable.len());
+    println!("Result: {}", disintegratable.len());
 }
 
 fn parse_bricks(lines: &Vec<String>) -> Vec<((i32, i32, i32), (i32, i32, i32))> {

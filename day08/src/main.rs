@@ -3,7 +3,7 @@ use regex::Regex;
 use std::collections::HashMap;
 
 fn main() {
-    println!("Day 8, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 8, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
 
     // Load the path
@@ -77,7 +77,7 @@ fn main() {
         product *= (stat.first / 293) as i64;
     }
     product *= 293;
-    println!("Product: {}", product);
+    println!("Result: {}", product);
 }
 
 fn step<'a>(graph: &'a HashMap<String, (String, String)>, node_name: &String, direction: char) -> &'a String {

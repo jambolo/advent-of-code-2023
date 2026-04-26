@@ -20,7 +20,7 @@ struct Part {
 }
 
 fn main() {
-    println!("Day 19, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 19, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
 
     let lines = load::lines().unwrap();
 
@@ -60,7 +60,7 @@ fn main() {
         }
     }
 
-    println!("Sum: {}", sum);
+    println!("Result: {}", sum);
 }
 
 fn process_workflow(workflows: &HashMap<String, Vec<Rule>>, workflow: &str, part: &Part) -> String {

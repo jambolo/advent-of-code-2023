@@ -1,7 +1,7 @@
 use common::load;
 
 fn main() {
-    println!("Day 5, part {}", if cfg!(feature = "part2") { "2" } else { "1" });
+    println!("=== Day 5, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
     let lines = load::lines().unwrap();
     let mut iter = lines.iter();
 
@@ -20,7 +20,7 @@ fn main() {
         map = combine(&map, m);
     }
 
-    println!("Min location: {}", map[0].0);
+    println!("Result: {}", map[0].0);
 }
 
 fn parse_seeds<'a, I>(iter: &mut I) -> Vec<(i64, i64)>
