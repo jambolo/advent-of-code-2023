@@ -188,10 +188,10 @@ For part 2, I felt that there had to be a simple algorithm for computing the are
 
 It is disappointing that the dictionary type in Rust is called `HashMap`. It is almost always better to name something according to what it is or what it does than according to how it is implemented.
 
-| Part | Answer |
-|-----:|-------:|
-|    1 | 389114 |
-|    2 |        |
+| Part |      Answer     |
+|-----:|----------------:|
+|    1 |          389114 |
+|    2 | 125051049836302 |
 
 ## Day 20
 

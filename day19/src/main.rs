@@ -1,14 +1,18 @@
 use common::load;
 use regex::Regex;
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 
-//a<2006:qkq,m>2090:A,rfg
+
+#[derive(Debug)]
+struct Constraint {
+    attribute: char,   // x, m, a, s
+    cmp: char,         // <, >
+    threshold: i32,
+}
 #[derive(Debug)]
 struct Rule {
-    attribute: Option<char>,
-    cmp: Option<char>,
-    threshold: Option<i32>,
-    workflow: String,
+    constraint: Option<Constraint>,
+    workflow: String,           // A, R, or another workflow name
 }
 
 #[derive(Debug)]
@@ -17,6 +21,13 @@ struct Part {
     m: i32,
     a: i32,
     s: i32,
+}
+#[derive(Debug, Clone)]
+struct XmasRange {
+    x: (i32, i32),  // [lower, upper)
+    m: (i32, i32),  // [lower, upper)
+    a: (i32, i32),  // [lower, upper)
+    s: (i32, i32),  // [lower, upper)
 }
 
 fn main() {
@@ -44,6 +55,15 @@ fn main() {
         i += 1;
     }
 
+    let result = if cfg!(feature = "part2") {
+        part2(workflows)
+    } else {
+        part1(workflows, parts)
+    };
+    println!("Result: {}", result)
+}
+
+fn part1(workflows: HashMap<String, Vec<Rule>>, parts: Vec<Part>) -> i64 {
     let mut sum: i64 = 0;
 
     // Run each part through the workflow
@@ -59,23 +79,119 @@ fn main() {
             debug_assert!(workflow == "R");
         }
     }
-
-    println!("Result: {}", sum);
+    sum
 }
 
+fn part2(workflows: HashMap<String, Vec<Rule>>) -> i64 {
+    let mut count:i64 = 0;
+
+    let mut queue: VecDeque<(String, XmasRange)> = VecDeque::new();
+    queue.push_back(("in".to_string(), XmasRange {
+        x: (1, 4001),   // [1, 4000]
+        m: (1, 4001),   // [1, 4000]
+        a: (1, 4001),   // [1, 4000]
+        s: (1, 4001),   // [1, 4000]
+    }));
+
+    let mut process_count = 0;
+    while !queue.is_empty() {
+        let (workflow, initial_range) = queue.pop_front().unwrap();
+        if workflow == "A" {
+            count += range_combinations(&initial_range);
+            continue;
+        } else if workflow == "R" {
+            process_count += 1;
+            if process_count % 1000 == 0 {
+                println!("Processed {} workflows, queue size: {}, count: {}", process_count, queue.len(), count);
+            }
+            continue;
+        }
+        let rules = workflows.get(&workflow).unwrap();
+        let mut range = initial_range;
+        for rule in rules {
+            let (r0, r1) = split_xmas_range(&range, &rule.constraint);
+            if let Some(sub_range) = r0 {
+                queue.push_back((rule.workflow.clone(), sub_range));
+            }
+            if let Some(remainder) = r1 {
+                range = remainder;
+            } else {
+                break;
+            }
+        }
+        process_count += 1;
+        if process_count % 1000 == 0 {
+            println!("Processed {} workflows, queue size: {}, count: {}", process_count, queue.len(), count);
+        }
+    }
+    count
+}
+
+fn range_combinations(range: &XmasRange) -> i64 {
+    (range.x.1 - range.x.0) as i64 *
+    (range.m.1 - range.m.0) as i64 *
+    (range.a.1 - range.a.0) as i64 *
+    (range.s.1 - range.s.0) as i64
+}
+
+fn split_xmas_range(range: &XmasRange, constraint: &Option<Constraint>) -> (Option<XmasRange>, Option<XmasRange>) {
+    if let Some(c) = constraint {
+        match c.attribute{
+            'x' => {
+                let (x0, x1) = split_range(range.x, c.cmp, c.threshold);
+                let sub_range = x0.map(|x| XmasRange { x, m: range.m, a: range.a, s: range.s });
+                let remainder = x1.map(|x| XmasRange { x, m: range.m, a: range.a, s: range.s });
+                (sub_range, remainder)
+            }
+            'm' => {
+                let (m0, m1) = split_range(range.m, c.cmp, c.threshold);
+                let sub_range = m0.map(|m| XmasRange { x: range.x, m, a: range.a, s: range.s });
+                let remainder = m1.map(|m| XmasRange { x: range.x, m, a: range.a, s: range.s });
+                (sub_range, remainder)
+            }
+            'a' => {
+                let (a0, a1) = split_range(range.a, c.cmp, c.threshold);
+                let sub_range = a0.map(|a| XmasRange { x: range.x, m: range.m, a, s: range.s });
+                let remainder = a1.map(|a| XmasRange { x: range.x, m: range.m, a, s: range.s });
+                (sub_range, remainder)
+            }
+            's' => {
+                let (s0, s1) = split_range(range.s, c.cmp, c.threshold);
+                let sub_range = s0.map(|s| XmasRange { x: range.x, m: range.m, a: range.a, s });
+                let remainder = s1.map(|s| XmasRange { x: range.x, m: range.m, a: range.a, s });
+                (sub_range, remainder)
+            }
+            _ => panic!("Invalid attribute: {}", c.attribute),
+        }
+    } else {
+        (Some(range.clone()), None)
+    }
+}
+
+fn split_range(range: (i32, i32), cmp: char, threshold: i32) -> (Option<(i32, i32)>, Option<(i32, i32)>) {
+    if cmp == '<' && threshold > range.0 {
+        let upper = range.1.min(threshold);
+        (Some((range.0, upper)), if upper < range.1 { Some((upper, range.1)) } else { None })
+    } else if cmp == '>' && threshold + 1 < range.1 {
+        let lower = range.0.max(threshold + 1);
+        (Some((lower, range.1)), if lower > range.0 { Some((range.0, lower)) } else { None })
+    } else {
+        (None, Some(range)) // No split, return original range as remainder
+    }
+}
 fn process_workflow(workflows: &HashMap<String, Vec<Rule>>, workflow: &str, part: &Part) -> String {
     if let Some(rules) = workflows.get(workflow) {
         for rule in rules {
-            if let Some(attribute) = rule.attribute {
-                let value = match attribute {
+            if let Some(constraint) = &rule.constraint {
+                let value = match constraint.attribute {
                     'x' => part.x,
                     'm' => part.m,
                     'a' => part.a,
                     's' => part.s,
-                    _ => panic!("Invalid attribute: {}", attribute),
+                    _ => panic!("Invalid attribute: {}", constraint.attribute),
                 };
-                let threshold = rule.threshold.unwrap();
-                let cmp = rule.cmp.unwrap();
+                let threshold = constraint.threshold;
+                let cmp = constraint.cmp;
                 match cmp {
                     '<' => {
                         if value < threshold {
@@ -115,22 +231,22 @@ fn parse_rule(s: &str) -> Rule {
     let rule_re = Regex::new(r"^([xmas])([<>])(\d+):(\w+)|(\w+)$").unwrap();
     if let Some(captures) = rule_re.captures(s) {
         if let Some(match1) = captures.get(1) {
-            let attribute = match1.as_str().chars().next();
-            let cmp = captures.get(2).unwrap().as_str().chars().next();
-            let threshold = captures.get(3).map(|m| m.as_str().parse().unwrap());
+            let attribute = match1.as_str().chars().next().unwrap();
+            let cmp = captures.get(2).unwrap().as_str().chars().next().unwrap();
+            let threshold = captures.get(3).map(|m| m.as_str().parse().unwrap()).unwrap();
             let workflow = captures.get(4).unwrap().as_str().to_string();
             return Rule {
-                attribute,
-                cmp,
-                threshold,
+                constraint: Some(Constraint {
+                    attribute,
+                    cmp,
+                    threshold,
+                }),
                 workflow,
             };
         } else {
             let workflow = captures.get(5).unwrap().as_str().to_string();
             return Rule {
-                attribute: None,
-                cmp: None,
-                threshold: None,
+                constraint: None,
                 workflow,
             };
         }
