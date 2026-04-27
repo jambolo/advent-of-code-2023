@@ -206,12 +206,12 @@ I removed all the references to eliminate the lifetime headaches. They weren't n
 
 ## Day 21
 
-It's a simple depth-first search, however 2<sup>128</sup> nodes may be a problem. I notice that any cell reached on an even number of steps can also be reached on any greater even number of steps. So, because the number of steps in the puzzle is even, I think an effective optimization is to do a breadth-first search and mark every cell reached on an even number of steps as a terminal cell and to prune any branch that reaches a terminal cell on an even number steps.
+It's a simple depth-first search, however the number of nodes in part 2 is a problem. For part 2, the solution was found by computing the value for step counts of `131 * n + 65`, where `131` is the size of the map and `65` is the remainder of `26501365 / 131`, and then extrapolating that to 26501365 steps.
 
-| Part | Answer |
-|-----:|-------:|
-|    1 |   3816 |
-|    2 |        |
+| Part |      Answer     |
+|-----:|----------------:|
+|    1 |            3816 |
+|    2 | 634549784009844 |
 
 ## Day 22
 
