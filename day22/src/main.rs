@@ -1,5 +1,7 @@
 use common::load;
 use std::collections::VecDeque;
+use itertools::Itertools;
+use itertools::iproduct;
 
 type Position = (i32, i32, i32);
 type Volume = (Position, Position);
@@ -72,14 +74,16 @@ fn chain_reaction(first_brick: usize, supports: &[Vec<usize>], initial_supported
 }
 
 fn parse_bricks(lines: &[String]) -> Vec<Volume> {
-    let mut bricks: Vec<Volume> = Vec::new();
-    for line in lines {
+    lines.iter().map(|line| {
         let corners: Vec<&str> = line.split("~").collect();
-        let c0: Vec<i32> = corners[0].split(",").map(|s| s.parse().unwrap()).collect();
-        let c1: Vec<i32> = corners[1].split(",").map(|s| s.parse().unwrap()).collect();
-        bricks.push(((c0[0], c0[1], c0[2]), (c1[0], c1[1], c1[2])));
-    }
-    bricks
+        let c0: (i32, i32, i32) = corners[0].split(",")
+            .map(|s| s.parse().unwrap())
+            .collect_tuple::<(_,_,_)>().unwrap();
+        let c1: (i32, i32, i32) = corners[1].split(",")
+            .map(|s| s.parse().unwrap())
+            .collect_tuple::<(_,_,_)>().unwrap();
+        (c0, c1)
+    }).collect()
 }
 
 fn find_extents(bricks: &[Volume]) -> Volume {
@@ -119,8 +123,8 @@ fn highest_z_under(brick: &Volume, heights: &[Vec<i32>]) -> i32 {
     let max_x = brick.1 .0;
     let min_y = brick.0 .1;
     let max_y = brick.1 .1;
-    (min_x..=max_x)
-        .flat_map(|x| (min_y..=max_y).map(move |y| heights[y as usize][x as usize]))
+    iproduct!(min_x..=max_x, min_y..=max_y)
+        .map(|(x, y)| heights[y as usize][x as usize])
         .max()
         .unwrap()
 }

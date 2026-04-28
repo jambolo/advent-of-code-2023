@@ -1,10 +1,12 @@
 use common::load;
+use itertools::Itertools;
+use itertools::iproduct;
 
 const EXPANSION: i64 = if cfg!(feature = "part2") { 1000000 - 1 } else { 1 };
 
 fn main() {
     println!("=== Day 11, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
-    let galaxy = load::lines().unwrap();
+    let galaxy = load::map().unwrap();
 
     let (xr, xc) = expand(&galaxy);
     let stars = find_stars(&galaxy);
@@ -14,9 +16,8 @@ fn main() {
 }
 
 fn find_distances(stars: &[(usize, usize)], xr: &[usize], xc: &[usize]) -> Vec<i64> {
-    (0..stars.len() - 1)
-        .flat_map(|i| (i + 1..stars.len())
-            .map(move |j| distance(&stars[i], &stars[j], xr, xc)))
+    stars.iter().tuple_combinations()
+        .map(|(star1, star2)| distance(star1, star2, xr, xc))
         .collect()
 }
 
@@ -43,36 +44,38 @@ fn number_of_expansions_between(vec: &[usize], a: usize, b: usize) -> i64 {
     (end - start) as i64
 }
 
-fn find_stars(galaxy: &[String]) -> Vec<(usize, usize)> {
-    (0..galaxy.len())
-        .flat_map(|i| (0..galaxy[i].len())
-            .filter(move |j| galaxy[i].chars().nth(*j).unwrap() == '#')
-            .map(move |j| (i, j)))
+fn find_stars(galaxy: &[Vec<char>]) -> Vec<(usize, usize)> {
+    let height = galaxy.len();
+    let width = galaxy[0].len();
+    iproduct!(0..height, 0..width)
+        .filter(|(i, j)| galaxy[*i][*j] == '#')
         .collect()
 }
 
 // Expands the galaxy
-fn expand(galaxy: &[String]) -> (Vec<usize>, Vec<usize>) {
+fn expand(galaxy: &[Vec<char>]) -> (Vec<usize>, Vec<usize>) {
     let xr = expand_vertically(galaxy);
     let xc = expand_horizontally(galaxy);
     (xr, xc)
 }
 
 // Expands the galaxy horizontally
-fn expand_horizontally(galaxy: &[String]) -> Vec<usize> {
-    (0..galaxy[0].len()).filter(|i| column_is_empty(galaxy, *i)).collect()
+fn expand_horizontally(galaxy: &[Vec<char>]) -> Vec<usize> {
+    let width = galaxy[0].len();
+    (0..width).filter(|i| column_is_empty(galaxy, *i)).collect()
 }
 
 // Returns true if the column is empty
-fn column_is_empty(galaxy: &[String], column: usize) -> bool {
-    galaxy.iter().all(|line| line.chars().nth(column).unwrap() == '.')
+fn column_is_empty(galaxy: &[Vec<char>], column: usize) -> bool {
+    galaxy.iter().all(|line| line[column] == '.')
 }
 
-fn expand_vertically(galaxy: &[String]) -> Vec<usize> {
-    (0..galaxy.len()).filter(|i| row_is_empty(&galaxy[*i])).collect()
+fn expand_vertically(galaxy: &[Vec<char>]) -> Vec<usize> {
+    let height = galaxy.len();
+    (0..height).filter(|i| row_is_empty(&galaxy[*i])).collect()
 }
 
 // Returns true if the row is empty
-fn row_is_empty(row: &str) -> bool {
-    row.chars().all(|c| c == '.')
+fn row_is_empty(row: &[char]) -> bool {
+    row.iter().all(|&c| c == '.')
 }

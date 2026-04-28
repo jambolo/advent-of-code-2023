@@ -1,13 +1,9 @@
 use common::load;
+use itertools::iproduct;
 
 fn main() {
     println!("=== Day 14, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
-    let lines = load::lines().unwrap();
-    let mut map: Vec<Vec<char>> = vec![];
-    for line in lines {
-        map.push(line.chars().collect());
-    }
-    //    print_map(&map);
+    let mut map = load::map().unwrap();
 
     if cfg!(feature = "part2") {
         // For part 2, the load repeats every 360 cycles
@@ -30,7 +26,7 @@ fn tip_north(map: &mut [Vec<char>]) {
     let rows = map.len();
     let cols = map[0].len();
 
-    for (i, j) in (1..rows).flat_map(|i| (0..cols).map(move |j| (i, j))) {
+    for (i, j) in iproduct!(1..rows, 0..cols) {
         if map[i][j] == 'O' {
             roll_north(map, i, j);
         }
@@ -52,7 +48,7 @@ fn tip_west(map: &mut [Vec<char>]) {
     let rows = map.len();
     let cols = map[0].len();
 
-    for (i, j) in (1..cols).flat_map(|j| (0..rows).map(move |i| (i, j))) {
+    for (j, i) in iproduct!(1..cols, 0..rows) {
         if map[i][j] == 'O' {
             roll_west(map, i, j);
         }
@@ -74,7 +70,7 @@ fn tip_south(map: &mut [Vec<char>]) {
     let rows = map.len();
     let cols = map[0].len();
 
-    for (i, j) in (0..rows - 1).rev().flat_map(|i| (0..cols).map(move |j| (i, j))) {
+    for (i, j) in iproduct!((0..rows - 1).rev(), 0..cols) {
         if map[i][j] == 'O' {
             roll_south(map, i, j);
         }
@@ -96,7 +92,7 @@ fn tip_east(map: &mut [Vec<char>]) {
     let rows = map.len();
     let cols = map[0].len();
 
-    for (i, j) in (0..cols - 1).rev().flat_map(|j| (0..rows).map(move |i| (i, j))) {
+    for (j, i) in iproduct!((0..cols - 1).rev(), 0..rows) {
         if map[i][j] == 'O' {
             roll_east(map, i, j);
         }

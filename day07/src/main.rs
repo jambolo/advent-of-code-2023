@@ -1,4 +1,5 @@
 use common::load;
+use itertools::Itertools;
 
 #[cfg(not(feature = "part2"))]
 const SORT_ORDER: [char; 13] = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
@@ -86,188 +87,89 @@ fn is_five_of_a_kind(hand: &[char]) -> bool {
 
 #[cfg(feature = "part2")]
 fn is_five_of_a_kind(hand: &[char]) -> bool {
-    let c = hand[0];
-    for card in hand {
-        if *card != c && *card != 'J' {
-            return false;
-        }
-    }
-    true
+    let c = hand[0]; // The hand is sorted so the first card can never be a joker
+    hand.iter().all(|&card| card == c || card == 'J')
 }
 
 #[cfg(not(feature = "part2"))]
 fn is_four_of_a_kind(hand: &[char]) -> bool {
-    let mut counts = [0; 13];
-    for &card in hand {
-        if let Some(pos) = SORT_ORDER.iter().position(|&x| x == card) {
-            counts[pos] += 1;
-        }
-    }
-    counts.contains(&4)
+    let counts = hand.iter().counts();
+    counts.values().any(|&n| n >= 4)
 }
 
 #[cfg(feature = "part2")]
 fn is_four_of_a_kind(hand: &[char]) -> bool {
-    let mut count = 0;
-    let mut last = ' ';
-    let number_of_jokers = hand.iter().filter(|&x| *x == 'J').count() as i32;
-    for card in hand {
-        if *card == last {
-            count += 1;
-        } else if *card == 'J' {
-            continue;
-        } else {
-            count = 1;
-        }
-        last = *card;
-        if count + number_of_jokers == 4 {
-            return true;
-        }
-    }
-    false
+    let n_jokers = hand.iter().filter(|&&c| c == 'J').count();
+    hand.iter()
+        .filter(|&&c| c != 'J')
+        .counts()
+        .values()
+        .any(|&n| n + n_jokers >= 4)
 }
 
 #[cfg(not(feature = "part2"))]
 fn is_full_house(hand: &[char]) -> bool {
-    let mut counts = [0; 13];
-    for &card in hand {
-        if let Some(pos) = SORT_ORDER.iter().position(|&x| x == card) {
-            counts[pos] += 1;
-        }
-    }
-    counts.contains(&3) && counts.contains(&2)
+    let counts = hand.iter().counts();
+    let values = counts.values().cloned().collect::<Vec<usize>>();
+    values.contains(&3) && values.contains(&2)
 }
 
 #[cfg(feature = "part2")]
 fn is_full_house(hand: &[char]) -> bool {
-    let mut count1 = 0;
-    let mut count2 = 0;
-    let mut last1 = ' ';
-    let mut last2 = ' ';
-    for card in hand {
-        if *card == last1 {
-            count1 += 1;
-        } else if *card == last2 {
-            count2 += 1;
-        } else if count1 == 0 {
-            count1 = 1;
-            last1 = *card;
-        } else if count2 == 0 {
-            count2 = 1;
-            last2 = *card;
-        } else if *card == 'J' {
-            continue;
-        } else {
-            return false;
-        }
-    }
-    true
+    let n_jokers = hand.iter().filter(|&&c| c == 'J').count();
+    let counts = hand.iter().filter(|&&c| c != 'J').counts();
+    let values = counts.values().cloned().collect::<Vec<usize>>();
+
+    (values.contains(&3) && values.contains(&2)) ||                         // xxx yy
+    (values.contains(&3) && n_jokers >= 1) ||                               // xxx yJ OR xxx JJ
+    (values.iter().filter(|&&v| v == 2).count() == 2 && n_jokers >= 1) ||    // xxJ yy
+    (values.contains(&2) && n_jokers >= 2) ||                               // xxJ yJ OR xxJ JJ
+    (n_jokers >= 3)                                                         // xxJ JJ OR xJJ yJ OR xJJ JJ OR JJJ JJ
 }
 
 #[cfg(not(feature = "part2"))]
 fn is_three_of_a_kind(hand: &[char]) -> bool {
-    let mut counts = [0; 13];
-    for &card in hand {
-        if let Some(pos) = SORT_ORDER.iter().position(|&x| x == card) {
-            counts[pos] += 1;
-        }
-    }
-    counts.contains(&3)
+    let counts = hand.iter().counts();
+    counts.values().any(|&n| n >= 3)
 }
 
 #[cfg(feature = "part2")]
 fn is_three_of_a_kind(hand: &[char]) -> bool {
-    let mut count = 0;
-    let mut last = ' ';
-    let number_of_jokers = hand.iter().filter(|&x| *x == 'J').count() as i32;
-    for card in hand {
-        if *card == last {
-            count += 1;
-        } else if *card == 'J' {
-            continue;
-        } else {
-            count = 1;
-        }
-        last = *card;
-        if count + number_of_jokers == 3 {
-            return true;
-        }
-    }
-    false
+    let n_jokers = hand.iter().filter(|&&c| c == 'J').count();
+    hand.iter()
+        .filter(|&&c| c != 'J')
+        .counts()
+        .values()
+        .any(|&n| n + n_jokers >= 3)
 }
 
 #[cfg(not(feature = "part2"))]
 fn is_two_pair(hand: &[char]) -> bool {
-    let mut counts = [0; 13];
-    for &card in hand {
-        if let Some(pos) = SORT_ORDER.iter().position(|&x| x == card) {
-            counts[pos] += 1;
-        }
-    }
-    counts.iter().filter(|&&c| c == 2).count() == 2
+    let counts = hand.iter().counts();
+    counts.values().filter(|&&n| n >= 2).count() == 2
 }
 
 #[cfg(feature = "part2")]
 fn is_two_pair(hand: &[char]) -> bool {
-    let mut count1 = 0;
-    let mut count2 = 0;
-    let mut count3 = 0;
-    let mut last1 = ' ';
-    let mut last2 = ' ';
-    let mut last3 = ' ';
-    for card in hand {
-        if *card == last1 {
-            count1 += 1;
-        } else if *card == last2 {
-            count2 += 1;
-        } else if *card == last3 {
-            count3 += 1;
-        } else if count1 == 0 {
-            count1 = 1;
-            last1 = *card;
-        } else if count2 == 0 {
-            count2 = 1;
-            last2 = *card;
-        } else if count3 == 0 {
-            count3 = 1;
-            last3 = *card;
-        } else if *card == 'J' {
-            continue;
-        } else {
-            return false;
-        }
-    }
-    true
+    let n_jokers = hand.iter().filter(|&&c| c == 'J').count();
+    let counts = hand.iter().filter(|&&c| c != 'J').counts();
+    let values = counts.values().cloned().collect::<Vec<usize>>();
+
+    (values.iter().filter(|&&v| v >= 2).count() >= 2) ||    // xx yy -
+    (values.iter().any(|&v| v >= 2) && n_jokers >= 1) ||    // xx yJ - OR xx xJ -
+    (n_jokers >= 2)                                         // xJ yJ - OR xJ xJ - OR xJ JJ -
 }
 
 #[cfg(not(feature = "part2"))]
 fn is_pair(hand: &[char]) -> bool {
-    let mut counts = [0; 13];
-    for &card in hand {
-        if let Some(pos) = SORT_ORDER.iter().position(|&x| x == card) {
-            counts[pos] += 1;
-        }
-    }
-    counts.iter().filter(|&&c| c == 2).count() == 1
+    let counts = hand.iter().counts();
+    counts.values().any(|&n| n >= 2)
 }
 
 #[cfg(feature = "part2")]
 fn is_pair(hand: &[char]) -> bool {
-    let mut count = 0;
-    let mut last = ' ';
-    let number_of_jokers = hand.iter().filter(|&x| *x == 'J').count() as i32;
-    for card in hand {
-        if *card == last {
-            count += 1;
-        } else if *card == 'J' {
-            continue;
-        } else {
-            count = 1;
-        }
-        last = *card;
-        if count + number_of_jokers == 2 {
-            return true;
-        }
-    }
-    false
+    let n_jokers = hand.iter().filter(|&&c| c == 'J').count();
+    let counts = hand.iter().counts();
+
+    counts.values().any(|&n| n >= 2) || n_jokers >= 1
 }

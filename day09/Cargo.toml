@@ -9,6 +9,7 @@ description.workspace = true
 
 [dependencies]
 common = { path = "../common" }
+itertools = "0.14.0"
 
 [features]
 part2 = []

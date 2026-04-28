@@ -1,6 +1,9 @@
 use common::load;
 use regex::Regex;
 
+#[cfg(feature = "part2")]
+use itertools::Itertools;
+
 #[derive(Debug)]
 struct Step {
     #[allow(dead_code)]
@@ -74,10 +77,7 @@ fn part2(steps: &[Step]) {
 
 #[cfg(feature = "part2")]
 fn area(vertices: &[(i64, i64)]) -> i64 {
-    let n = vertices.len();
-    let a: i64 = vertices.iter()
-        .zip(vertices.iter().cycle().skip(1))
-        .take(n)
+    let a: i64 = vertices.iter().circular_tuple_windows()
         .map(|(v0, v1)| (v0.0 * v1.1) - (v1.0 * v0.1))
         .sum();
 
@@ -86,14 +86,9 @@ fn area(vertices: &[(i64, i64)]) -> i64 {
 
 #[cfg(feature = "part2")]
 fn perimeter(vertices: &[(i64, i64)]) -> i64 {
-    let n = vertices.len();
-    let p: i64 = vertices.iter()
-        .zip(vertices.iter().cycle().skip(1))
-        .take(n)
+    vertices.iter().circular_tuple_windows()
         .map(|(v0, v1)| (v1.0 - v0.0).abs() + (v1.1 - v0.1).abs())
-        .sum();
-
-    p
+        .sum()
 }
 
 /// Parses the input into a vector of Steps
@@ -111,25 +106,20 @@ fn perimeter(vertices: &[(i64, i64)]) -> i64 {
 ///
 fn parse_steps(lines: &[String]) -> Vec<Step> {
     let steps_re = Regex::new(r"^([UDLR])\s+(\d+)\s+\(#([0-9a-fA-F]+)\)$").expect("Failed to compile regex");
-    let mut steps: Vec<Step> = Vec::new();
 
-    for line in lines {
-        if let Some(captures) = steps_re.captures(line) {
-            let direction_m = captures.get(1).expect("Failed to parse direction");
-            let distance_m = captures.get(2).expect("Failed to parse distance");
-            let color_m = captures.get(3).expect("Failed to parse color");
-            let step = Step {
+    lines.iter()
+        .map(|line| steps_re.captures(line).unwrap())
+        .map(|cap| {
+            let direction_m = cap.get(1).expect("Failed to parse direction");
+            let distance_m = cap.get(2).expect("Failed to parse distance");
+            let color_m = cap.get(3).expect("Failed to parse color");
+            Step {
                 direction: direction_m.as_str().chars().next().expect("Missing direction"),
                 distance: distance_m.as_str().parse().expect("Invalid distance"),
                 color: u32::from_str_radix(color_m.as_str(), 16).expect("Invalid color"),
-            };
-            steps.push(step);
-        } else {
-            panic!("Failed to parse: '{}'", line);
-        }
-    }
-
-    steps
+            }
+        })
+        .collect()
 }
 
 #[cfg(not(feature = "part2"))]

@@ -5,20 +5,18 @@ fn main() {
     let lines = load::lines().unwrap();
 
     // Parse the cards
-    let mut cards: Vec<(i32, Vec<i32>, Vec<i32>)> = Vec::new();
+    let cards = lines.iter()
+        .map(|line| {
+            let parts: Vec<&str> = line.split(":").collect();
+            let _id: i32 = parts[0].split_whitespace().last().unwrap().parse().unwrap();
 
-    for line in lines {
-        let parts: Vec<&str> = line.split(":").collect();
-        let _id: i32 = parts[0].split_whitespace().last().unwrap().parse().unwrap();
-
-        let sets: Vec<&str> = parts[1].split("|").collect();
-        let mut winning: Vec<i32> = sets[0].split_whitespace().map(|s| s.parse().unwrap()).collect();
-        let mut yours: Vec<i32> = sets[1].split_whitespace().map(|s| s.parse().unwrap()).collect();
-
-        winning.sort();
-        yours.sort();
-        cards.push((1, winning, yours));
-    }
+            let sets: Vec<&str> = parts[1].split("|").collect();
+            let mut winning = sets[0].split_whitespace().map(|s| s.parse().unwrap()).collect::<Vec<i32>>();
+            let mut yours = sets[1].split_whitespace().map(|s| s.parse().unwrap()).collect::<Vec<i32>>();
+            winning.sort();
+            yours.sort();
+            (1, winning, yours)})
+        .collect();
 
     let result = if cfg!(feature = "part2") { part2(cards) } else { part1(cards) };
     println!("Result: {}", result);

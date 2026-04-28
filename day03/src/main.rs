@@ -5,14 +5,7 @@ use std::collections::BTreeSet;
 
 fn main() {
     println!("=== Day 3, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
-    let lines = load::lines().unwrap();
-
-    // Create a 2D array of characters
-    let mut grid: Vec<Vec<char>> = Vec::new();
-
-    for s in lines {
-        grid.push(s.chars().collect());
-    }
+    let grid = load::map().unwrap();
 
     #[cfg(not(feature = "part2"))]
     let mut sum = 0;

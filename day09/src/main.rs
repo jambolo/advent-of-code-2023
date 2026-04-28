@@ -1,4 +1,5 @@
 use common::load;
+use itertools::Itertools;
 
 fn main() {
     println!("=== Day 9, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
@@ -15,7 +16,7 @@ fn main() {
         let mut ends: Vec<i64> = Vec::new();
         let mut starts: Vec<i64> = Vec::new();
         let mut sequence = numbers.clone();
-        while !all_zeros(&sequence) {
+        while !sequence.iter().all(|&x| x == 0) {
             starts.push(sequence[0]);
             ends.push(*sequence.last().unwrap());
             sequence = next_sequence(&sequence);
@@ -44,19 +45,6 @@ fn main() {
     println!("Result: {}", psum);
 }
 
-fn all_zeros(sequence: &[i64]) -> bool {
-    for i in sequence {
-        if *i != 0 {
-            return false;
-        }
-    }
-    true
-}
-
 fn next_sequence(sequence: &[i64]) -> Vec<i64> {
-    let mut new_sequence = Vec::new();
-    for i in 1..sequence.len() {
-        new_sequence.push(sequence[i] - sequence[i - 1]);
-    }
-    new_sequence
+    sequence.iter().tuple_windows().map(|(a, b)| b - a).collect()
 }

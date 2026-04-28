@@ -60,7 +60,9 @@ fn part1(map: Vec<Vec<char>>, width: usize, height: usize, start: (usize, usize)
 
 fn part2(map: Vec<Vec<char>>, width: usize, height: usize, start: (usize, usize)) -> usize {
     // Offset the positions by multiple of width and height to avoid negative indices
+    #[allow(clippy::manual_div_ceil)]
     let offset_x = width * ((NUMBER_OF_STEPS as usize + width - 1) / width);
+    #[allow(clippy::manual_div_ceil)]
     let offset_y = height * ((NUMBER_OF_STEPS as usize + height - 1) / height);
     // List of positions that have been reached at each step
     let mut terminals: HashSet<(usize, usize)> = HashSet::new();

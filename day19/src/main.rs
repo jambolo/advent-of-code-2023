@@ -2,6 +2,7 @@ use common::load;
 use regex::Regex;
 use std::collections::{HashMap, VecDeque};
 
+type OptionalRange = Option<(i32, i32)>;
 
 #[derive(Debug)]
 struct Constraint {
@@ -168,7 +169,7 @@ fn split_xmas_range(range: &XmasRange, constraint: &Option<Constraint>) -> (Opti
     }
 }
 
-fn split_range(range: (i32, i32), cmp: char, threshold: i32) -> (Option<(i32, i32)>, Option<(i32, i32)>) {
+fn split_range(range: (i32, i32), cmp: char, threshold: i32) -> (OptionalRange, OptionalRange) {
     if cmp == '<' && threshold > range.0 {
         let upper = range.1.min(threshold);
         (Some((range.0, upper)), if upper < range.1 { Some((upper, range.1)) } else { None })

@@ -1,17 +1,12 @@
 use common::load;
+use itertools::iproduct;
 
 type Point = (usize, usize);
 type Direction = (isize, isize);
 
 fn main() {
     println!("=== Day 10, part {} ===", if cfg!(feature = "part2") { "2" } else { "1" });
-    let lines = load::lines().unwrap();
-
-    let mut grid: Vec<Vec<char>> = Vec::new();
-    for line in lines {
-        let row: Vec<char> = line.chars().collect();
-        grid.push(row);
-    }
+    let mut grid = load::map().unwrap();
 
     let starting_point = find_start(&grid);
     let points = find_exits(starting_point, &grid);
@@ -37,7 +32,9 @@ fn part1(grid: &[Vec<char>], starting_point: Point, points: &[(Point, Direction)
 }
 
 fn part2(grid: &mut [Vec<char>], starting_point: Point, points: &[(Point, Direction)]) -> i32 {
-    let mut occupied: Vec<Vec<bool>> = vec![vec![false; grid[0].len()]; grid.len()];
+    let width = grid[0].len();
+    let height = grid.len();
+    let mut occupied: Vec<Vec<bool>> = vec![vec![false; width]; height];
 
     occupied[starting_point.1][starting_point.0] = true;
     let mut p = points[0];
@@ -48,24 +45,19 @@ fn part2(grid: &mut [Vec<char>], starting_point: Point, points: &[(Point, Direct
 
     clear_unoccupied_points(grid, &occupied);
 
-    let number_of_inside_points = occupied
-        .iter()
-        .enumerate()
-        .flat_map(|(y, row)| row
-            .iter()
-            .enumerate()
-            .map(move |(x, &occupied_here)| (x, y, occupied_here)))
-        .filter(|(x, y, occupied_here)| !occupied_here && count_crossings(*x, *y, grid) % 2 == 1)
-        .count();
-
-    number_of_inside_points as i32
+    iproduct!(0..height, 0..width)
+        .filter(|(y, x)|
+            !occupied[*y][*x] && count_crossings(*x, *y, grid) % 2 == 1)
+        .count() as i32
 }
 
 fn clear_unoccupied_points(grid: &mut [Vec<char>], occupied: &[Vec<bool>]) {
     // Set all unoccupied points to '.'
-    (0..occupied.len()).flat_map(|y| (0..occupied[y].len()).map(move |x| (x, y)))
-        .filter(|(x, y)| !occupied[*y][*x])
-        .for_each(|(x, y)| grid[y][x] = '.');
+    let width = occupied[0].len();
+    let height = occupied.len();
+    iproduct!(0..height, 0..width)
+        .filter(|(y, x)| !occupied[*y][*x])
+        .for_each(|(y, x)| grid[y][x] = '.');
 }
 
 fn type_from_exits(exits: &[(Point, Direction)]) -> char {
