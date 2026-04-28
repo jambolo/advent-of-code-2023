@@ -7,6 +7,10 @@ description.workspace = true
 
 [dependencies]
 common = { path = "../common" }
+itertools = "0.14.0"
+nalgebra = "0.34.2"
+num-rational = "0.4.2"
+num-traits = "0.2.19"
 
 [features]
 part2 = []

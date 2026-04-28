@@ -239,16 +239,16 @@ One of the features I am starting to like about Rust is its extensive support fo
 
 ## Day 24
 
-Turns out part 1 is just ray intersection, so the only challenge was remembering the math.
+Turns out part 1 is just ray intersection, so the only challenge was remembering the math. Part 2 required serious linear algebra, so I had to look up how to solve the system of equations. I was on the right track, but it turns out that the solution involves a trick that I never would have thought of. After all that, I had a hell of a time trying figure out how do deal with precision issues. but it turned out to be a simple fix.
 
-| Part | Answer |
-|-----:|-------:|
-|    1 |  24627 |
-|    2 |        |
+| Part |      Answer     |
+|-----:|----------------:|
+|    1 |           24627 |
+|    2 | 527310134398221 |
 
 ## Day 25
 
-Well, I learned some graph theory and got more familiar with the intricacies of borrowing and lifetimes. It turns out that a general solution to the problem is intractable. I tried three different approaches before I went with forget the general solution, let's find the answer to this specific problem. The ad hoc approach did the job.
+Well, I learned some graph theory and got more familiar with the intricacies of borrowing and lifetimes. It turns out that a general solution to the problem is intractable. I tried three different approaches before I dumped the general solution, and went for the answer to this specific problem. The ad hoc approach did the job.
 
 | Part | Answer |
 |-----:|-------:|

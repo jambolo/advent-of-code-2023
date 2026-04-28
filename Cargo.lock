@@ -218,6 +218,8 @@ dependencies = [
  "common",
  "itertools",
  "nalgebra",
+ "num-rational",
+ "num-traits",
 ]
 
 [[package]]
