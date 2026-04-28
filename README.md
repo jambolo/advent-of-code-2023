@@ -220,7 +220,7 @@ Fairly simple. I had a bug that took a while to find because of all the moving p
 | Part | Answer |
 |-----:|-------:|
 |    1 |    439 |
-|    2 |        |
+|    2 |  43056 |
 
 ## Day 23
 

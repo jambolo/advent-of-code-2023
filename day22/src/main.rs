@@ -1,4 +1,5 @@
 use common::load;
+use std::collections::VecDeque;
 
 type Position = (i32, i32, i32);
 type Volume = (Position, Position);
@@ -24,9 +25,50 @@ fn main() {
     // For each brick, find the bricks it is supported by
     let brick_supported_by: Vec<Vec<usize>> = supported_by(&brick_supports);
 
-    // Find all bricks that are not the only support for any brick
-    let disintegratable: Vec<usize> = find_disintegratable_bricks(&brick_supports, &brick_supported_by);
-    println!("Result: {}", disintegratable.len());
+    let result = if cfg!(feature = "part2") {
+        part2(&brick_supports, &brick_supported_by)
+    } else {
+        part1(&brick_supports, &brick_supported_by)
+    };
+    println!("Result: {}", result);
+}
+
+fn part1(supports: &[Vec<usize>], supported_by: &[Vec<usize>]) -> usize {
+    let disintegratable: Vec<usize> = supports
+        .iter()
+        .enumerate()
+        .filter_map(|(i, support_list)| {
+            if support_list.is_empty() || support_list.iter().all(|&j| supported_by[j].len() > 1) {
+                Some(i)
+            } else {
+                None
+            }
+        })
+        .collect();
+    disintegratable.len()
+}
+
+fn part2(supports: &[Vec<usize>], supported_by: &[Vec<usize>]) -> usize {
+    (0..supports.len())
+        .map(|brick| chain_reaction(brick, supports, supported_by))
+        .sum()
+}
+
+fn chain_reaction(first_brick: usize, supports: &[Vec<usize>], initial_supported_by: &[Vec<usize>]) -> usize {
+    let mut supported_by = initial_supported_by.to_owned();
+    let mut disintegation_queue: VecDeque<usize> = VecDeque::from(vec![first_brick]);
+    let mut count = 0;
+    while let Some(brick) = disintegation_queue.pop_front() {
+        count += 1;
+        for &supported in &supports[brick] {
+            supported_by[supported].retain(|&b| b != brick);
+            if supported_by[supported].is_empty() {
+                disintegation_queue.push_back(supported);
+            }
+        }
+    }
+
+    count - 1 // Don't count the original brick
 }
 
 fn parse_bricks(lines: &[String]) -> Vec<Volume> {
@@ -43,8 +85,8 @@ fn parse_bricks(lines: &[String]) -> Vec<Volume> {
 fn find_extents(bricks: &[Volume]) -> Volume {
     let extents: Volume =
         bricks
-            .into_iter()
-            .fold(((std::i32::MAX, std::i32::MAX, std::i32::MAX), (0, 0, 0)), |acc, brick| {
+            .iter()
+            .fold(((i32::MAX, i32::MAX, i32::MAX), (0, 0, 0)), |acc, brick| {
                 let min = (acc.0 .0.min(brick.0 .0), acc.0 .1.min(brick.0 .1), acc.0 .2.min(brick.0 .2));
                 let max = (acc.1 .0.max(brick.1 .0), acc.1 .1.max(brick.1 .1), acc.1 .2.max(brick.1 .2));
                 (min, max)
@@ -55,12 +97,12 @@ fn find_extents(bricks: &[Volume]) -> Volume {
 fn drop(bricks: &mut [Volume], extents: Volume) {
     let mut heights: Vec<Vec<i32>> = vec![vec![1; extents.1 .0 as usize + 1]; extents.1 .1 as usize + 1];
     for brick in bricks {
-        let distance = brick.0 .2 - highest_z_under(&brick, &heights);
+        let distance = brick.0 .2 - highest_z_under(brick, &heights);
         if distance > 0 {
             brick.0 .2 -= distance;
             brick.1 .2 -= distance;
         }
-        pile(&brick, &mut heights);
+        pile(brick, &mut heights);
     }
 }
 
@@ -108,7 +150,11 @@ fn supports(bricks: &[Volume]) -> Vec<Vec<usize>> {
 }
 
 fn overlaps_xy(brick0: &Volume, brick1: &Volume) -> bool {
-    brick0.1 .0 >= brick1.0 .0 && brick0.0 .0 <= brick1.1 .0 && brick0.1 .1 >= brick1.0 .1 && brick0.0 .1 <= brick1.1 .1
+    let min0 = brick0.0;
+    let max0 = brick0.1;
+    let min1 = brick1.0;
+    let max1 = brick1.1;
+    max0.0 >= min1.0 && min0.0 <= max1.0 && max0.1 >= min1.1 && min0.1 <= max1.1
 }
 
 fn supported_by(supports: &[Vec<usize>]) -> Vec<Vec<usize>> {
@@ -119,19 +165,4 @@ fn supported_by(supports: &[Vec<usize>]) -> Vec<Vec<usize>> {
         }
     }
     brick_supported_by
-}
-
-fn find_disintegratable_bricks(supports: &[Vec<usize>], supported_by: &[Vec<usize>]) -> Vec<usize> {
-    let disintegratable: Vec<usize> = supports
-        .iter()
-        .enumerate()
-        .filter_map(|(i, support_list)| {
-            if support_list.is_empty() || support_list.iter().all(|&j| supported_by[j].len() > 1) {
-                Some(i)
-            } else {
-                None
-            }
-        })
-        .collect();
-    disintegratable
 }

@@ -91,7 +91,7 @@ fn part2(map: Vec<Vec<char>>, width: usize, height: usize, start: (usize, usize)
     // The number of steps should be 26501365, but that is too large to compute in a reasonable time, so I computed results for
     // multiples of the map size + 65 and extrapolated the result to the final number of steps, which is returned here.
     // The answer is `15505n^2 + 15633n + 3944`, where `n` is (26501365 - 65) / width
-    let n = (26501365 as usize - 65) / width;
+    let n = (26501365_usize - 65) / width;
     15505 * n * n + 15633 * n + 3944
 }
 
